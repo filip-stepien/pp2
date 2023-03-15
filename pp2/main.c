@@ -1,23 +1,12 @@
 ﻿#include <stdbool.h>
-#include <allegro5/allegro5.h>
-#include <allegro5/allegro_font.h>
+#include "game_data.h" // plik nagłówkowy z podstawowymi strukturami gry
 
-// struktura zawierająca podstawową konfigurację gry
-struct config {
-    unsigned short int width;   // szerokość okna gry
-    unsigned short int height;  // wysokość okna gry
-    unsigned short int fps;     // liczba klatek/s
-};
+/* Pliki nagłówkowe z logiką gry */
+#include "example.h";
+/**/
 
-// struktura zawierająca główne zmienne okna gry
-struct game_window {
-    bool gameInitialized;       // czy gra została zainicjowana poprawnie
-    bool keyboardInitialized;   // czy gra posiada zainicjowaną klawiaturę
-    ALLEGRO_DISPLAY* display;   // okno gry
-    ALLEGRO_EVENT_QUEUE* queue; // kolejka gry
-    ALLEGRO_FONT* font;         // czcionka okna
-    ALLEGRO_TIMER* timer;       // licznik klatek gry
-};
+extern struct game_window game; // definicja zewnętrznej struktury zawierającej główne zmienne okna gry
+extern struct config cfg;       // definicja zewnętrznej struktury z podstawową konfiguracją gry
 
 // funkcja inicjująca zmienne okna gry i źródła eventów
 int game_init(struct game_window* game, struct config cfg)
@@ -58,15 +47,9 @@ void game_cleanup(struct game_window* game)
 
 int main()
 {
-    // konfiguracja gry
-    struct config cfg = {
-        800,    // szerokość okna 
-        600,    // wysokość okna
-        30      // ilość klatek/s
-    };
-    struct game_window game;    // zmienne gry
     game_init(&game, cfg);      // inicjalizacja gry
 
+    al_start_timer(game.timer); // start licznika gry
     bool running = true;        // zmienna sterująca działaniem głównej pętli gry
     ALLEGRO_EVENT event;        // zmienna w której znajdzie się przechwycony event
 
@@ -77,7 +60,11 @@ int main()
         switch (event.type)
         {
         case ALLEGRO_EVENT_TIMER:   // event pojedynczego tyknięcia licznika
-            al_flip_display();      // rysowanie
+            
+            /* LOGIKA GRY */
+            example_render();   // przykładowy element logiki
+
+            al_flip_display();  // rysowanie
             break;
 
         case ALLEGRO_EVENT_KEY_UP:          // event "klawisz spuszczony"
@@ -86,6 +73,8 @@ int main()
             break;
         }
     }
+
+    game_cleanup(&game);    // czyszczenie po zakończeniu gry
 
     return 0;
 }
