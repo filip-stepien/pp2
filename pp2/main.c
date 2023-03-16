@@ -8,6 +8,7 @@
 extern struct game_window game; // definicja zewnętrznej struktury zawierającej główne zmienne okna gry
 extern struct config cfg;       // definicja zewnętrznej struktury z podstawową konfiguracją gry
 
+// test 
 // funkcja inicjująca zmienne okna gry i źródła eventów
 int game_init(struct game_window* game, struct config cfg)
 {
