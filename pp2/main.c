@@ -1,8 +1,10 @@
-﻿#include <stdbool.h>
+﻿#include <stdio.h>
+#include <stdbool.h>
 #include "game_data.h" // plik nagłówkowy z podstawowymi strukturami gry
 
 /* Pliki nagłówkowe z logiką gry */
-#include "example.h";
+#include "example.h"
+#include "game_board.h"
 /**/
 
 extern struct game_window game; // definicja zewnętrznej struktury zawierającej główne zmienne okna gry
@@ -12,20 +14,25 @@ extern struct config cfg;       // definicja zewnętrznej struktury z podstawow�
 int game_init(struct game_window* game, struct config cfg)
 {
     // inicjacja zmiennych struktury okna gry
-    game->gameInitialized = al_init();
-    game->keyboardInitialized = al_install_keyboard();
+    game->game_initialized = al_init();
+    game->keyboard_initialized = al_install_keyboard();
+    game->primitive_shapes_addon_initialized = al_init_primitives_addon();
+    game->font_addon_initialized = al_init_font_addon();
+    game->ttf_addon_initialized = al_init_ttf_addon();
     game->display = al_create_display(cfg.width, cfg.height);
     game->queue = al_create_event_queue();
-    game->font = al_create_builtin_font();
+    game->font = al_load_font("Arial.ttf", cfg.font_size, NULL);
     game->timer = al_create_timer(1.0 / (double)cfg.fps); // klatka co 1/30 sekundy = 30 klatek na sekundę
 
     // generacja kodów błędów, jeżeli któraś zmienna nie została zainicjowana poprawnie
-    if (!game->gameInitialized) return 100;
-    if (!game->keyboardInitialized) return 101;
-    if (!game->display) return 102;
-    if (!game->queue) return 103;
-    if (!game->font) return 104;
-    if (!game->timer) return 105;
+    if (!game->game_initialized) return 100;
+    if (!game->keyboard_initialized) return 101;
+    if (!game->primitive_shapes_addon_initialized) return 102;
+    if (!game->font_addon_initialized) return 103;
+    if (!game->display) return 104;
+    if (!game->queue) return 105;
+    if (!game->font) return 106;
+    if (!game->timer) return 107;
 
     // rejestrowanie źródeł eventów
     al_register_event_source(game->queue, al_get_keyboard_event_source());              // eventy klawiatury
@@ -48,10 +55,16 @@ void game_cleanup(struct game_window* game)
 int main()
 {
     game_init(&game, cfg);      // inicjalizacja gry
-
     al_start_timer(game.timer); // start licznika gry
+
     bool running = true;        // zmienna sterująca działaniem głównej pętli gry
     ALLEGRO_EVENT event;        // zmienna w której znajdzie się przechwycony event
+
+    /* PRZYKŁADOWE WYGENEROWANIE PLANSZY */
+    generate_board();           // wygeneruj plansze
+    draw_board();               // rysuj plansze
+    insert_node(0, 2, 2);       // wstaw klocek który w tablicy 2D ma koordynaty 0,2 z wartością 2
+    draw_board();               // narysuj planszę z wstawionym klockiem
 
     // główna pętla gry
     while (running)
@@ -62,7 +75,7 @@ int main()
         case ALLEGRO_EVENT_TIMER:   // event pojedynczego tyknięcia licznika
             
             /* LOGIKA GRY */
-            example_render();   // przykładowy element logiki
+            //example_render();   // przykładowy element logiki
 
             al_flip_display();  // rysowanie
             break;

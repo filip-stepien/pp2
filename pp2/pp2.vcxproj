@@ -80,6 +80,8 @@
     <LinkIncremental>true</LinkIncremental>
     <Allegro_AddonImage>true</Allegro_AddonImage>
     <Allegro_AddonFont>true</Allegro_AddonFont>
+    <Allegro_AddonPrimitives>true</Allegro_AddonPrimitives>
+    <Allegro_AddonTTF>true</Allegro_AddonTTF>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -142,6 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="example.c" />
+    <ClCompile Include="game_board.c" />
     <ClCompile Include="game_data.c" />
     <ClCompile Include="main.c" />
   </ItemGroup>
@@ -150,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="example.h" />
+    <ClInclude Include="game_board.h" />
     <ClInclude Include="game_data.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
