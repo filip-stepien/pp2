@@ -24,9 +24,6 @@
     <ClCompile Include="game_data.c">
       <Filter>Pliki zasobów</Filter>
     </ClCompile>
-    <ClCompile Include="game_board.c">
-      <Filter>Pliki zasobów</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -36,9 +33,6 @@
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
     <ClInclude Include="game_data.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
-    <ClInclude Include="game_board.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>

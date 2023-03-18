@@ -6,26 +6,20 @@
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
-#include <allegro5/allegro_font.h>
-#include <allegro5/allegro_ttf.h>
 
 // struktura zawieraj¹ca podstawow¹ konfiguracjê gry
 struct config {
-    unsigned short int width;       // szerokoœæ okna gry
-    unsigned short int height;      // wysokoœæ okna gry
-    unsigned short int font_size;   // wysokoœæ okna gry
-    unsigned short int fps;         // liczba klatek/s
+    unsigned short int width;   // szerokoœæ okna gry
+    unsigned short int height;  // wysokoœæ okna gry
+    unsigned short int fps;     // liczba klatek/s
 };
 
 // struktura zawieraj¹ca g³ówne zmienne okna gry
 struct game_window {
-    bool game_initialized;                      // czy gra zosta³a zainicjowana poprawnie
-    bool keyboard_initialized;                  // czy gra posiada zainicjowan¹ klawiaturê
-    bool primitive_shapes_addon_initialized;    // czy modu³ z podstawowymi kszta³tami zosta³ zainicjowany
-    bool font_addon_initialized;                // czy modu³ z czcionk¹ zosta³ zainicjowany
-    bool ttf_addon_initialized;                 // czy modu³ z plikami .ttf zosta³ zainicjowany
-    ALLEGRO_DISPLAY* display;                   // okno gry
-    ALLEGRO_EVENT_QUEUE* queue;                 // kolejka gry
-    ALLEGRO_FONT* font;                         // czcionka okna
-    ALLEGRO_TIMER* timer;                       // licznik klatek gry
+    bool gameInitialized;       // czy gra zosta³a zainicjowana poprawnie
+    bool keyboardInitialized;   // czy gra posiada zainicjowan¹ klawiaturê
+    ALLEGRO_DISPLAY* display;   // okno gry
+    ALLEGRO_EVENT_QUEUE* queue; // kolejka gry
+    ALLEGRO_FONT* font;         // czcionka okna
+    ALLEGRO_TIMER* timer;       // licznik klatek gry
 };
