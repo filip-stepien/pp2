@@ -23,10 +23,11 @@ struct node {
 struct node board[4][4];	// tablica 2D reprezentuj¹ca planszê
 
 // funkcja wstêpnie wype³niaj¹ca planszê (tablicê 2D) klockami o wartoœci 0
-void generate_board()
+// przyjmuje koordynaty x i y, w których ma zostaæ wygenerowana plansza
+void generate_board(int board_x, int board_y)
 {
 	int i, j;
-	int x = 0, y = 0;
+	int x = board_x, y = board_y;	// liczenie koordynatów x i y rozpoczyna siê od koordynatów w których ma znajdowaæ siê plansza
 
 	for (i = 0; i < y_size; i++)
 	{
@@ -49,7 +50,7 @@ void generate_board()
 			x += node_size + gap;			// kolejna iteracja na osi X = zwiêkszenie x o d³ugoœæ boku i przerwê miêdzy klockami
 		}
 
-		x = 0;					// wyzerowanie x, aby rozpocz¹æ od pocz¹tku wiersza
+		x = board_x;			// resetowanie x do pocz¹tkowej wartoœci, aby rozpocz¹æ od pocz¹tku wiersza
 		y += node_size + gap;	// kolejna iteracja na osi Y = zwiêkszenie y o d³ugoœæ boku i przerwê miêdzy klockami
 	}
 

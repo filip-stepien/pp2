@@ -61,7 +61,7 @@ int main()
     ALLEGRO_EVENT event;        // zmienna w której znajdzie się przechwycony event
 
     /* PRZYKŁADOWE WYGENEROWANIE PLANSZY */
-    generate_board();           // wygeneruj plansze
+    generate_board(100, 100);   // wygeneruj plansze w koordynatach (100,100)
     draw_board();               // rysuj plansze
     insert_node(0, 2, 2);       // wstaw klocek który w tablicy 2D ma koordynaty 0,2 z wartością 2
     draw_board();               // narysuj planszę z wstawionym klockiem
