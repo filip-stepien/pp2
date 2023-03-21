@@ -52,8 +52,51 @@ void game_cleanup(struct game_window* game)
     game = NULL;                            // wyzerowanie struktury ze zmiennymi gry
 }
 
+
+bool check_err_state(code)
+{
+
+    switch (code)
+    {
+    case 0:
+        return false;
+
+    case 100:
+        puts("Niepoprawna inicjalizacja gry. \n Kod bledu 100");
+        return true;
+
+    case 101:
+        puts("Klawiatura nie zostala zinicjalizowana poprawnie. \n kod bledu 101");
+        return true;
+
+    case 102:
+        puts("Okno nie zostalo zainicjalizowane poprawnie. \n kod bledu 102");
+        return true;
+
+    case 103:
+        puts("Kolejka nie zostala zainicjalizowana poprawnie. \n kod bledu 103");
+        return true;
+
+    case 104:
+        puts("Czcionka nie zostala zainicjalizowana poprawnie. \n kod bledu 104");
+        return true;
+
+    case 105:
+        puts("Licznik nie zostal zainicjalizowany poprawnie. \n kod bledu 105");
+        return true;
+    }
+}
+
 int main()
 {
+
+    int code = game_init(&game, cfg);
+
+    bool err = check_err_state(code);
+    if (err) return -1;
+    
+    
+
     game_init(&game, cfg);      // inicjalizacja gry
     al_start_timer(game.timer); // start licznika gry
 
@@ -69,6 +112,7 @@ int main()
     // główna pętla gry
     while (running)
     {
+
         al_wait_for_event(game.queue, &event);  // nasłuchuj eventów
         switch (event.type)
         {
