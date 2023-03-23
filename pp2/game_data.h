@@ -11,10 +11,14 @@
 
 // struktura zawieraj¹ca podstawow¹ konfiguracjê gry
 struct config {
-    unsigned short int width;       // szerokoœæ okna gry
-    unsigned short int height;      // wysokoœæ okna gry
-    unsigned short int font_size;   // wysokoœæ okna gry
-    unsigned short int fps;         // liczba klatek/s
+    unsigned short int width;           // szerokoœæ okna gry
+    unsigned short int height;          // wysokoœæ okna gry
+    unsigned short int font_size;       // wysokoœæ okna gry
+    unsigned short int fps;             // liczba klatek/s
+    int board_x_size;					// maksymalna iloœæ klocków na osi X
+    int board_y_size;					// maksymalna iloœæ klocków na osi Y
+    int board_node_size;				// wielkoœæ klocka (px)
+    int board_gap;						// wielkoœæ przerwy miêdzy klockami (10px)
 };
 
 // struktura zawieraj¹ca g³ówne zmienne okna gry
