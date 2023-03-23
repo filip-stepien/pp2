@@ -1,4 +1,6 @@
 ﻿#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include <stdbool.h>
 #include "game_data.h" // plik nagłówkowy z podstawowymi strukturami gry
 
@@ -9,6 +11,8 @@
 
 extern struct game_window game; // definicja zewnętrznej struktury zawierającej główne zmienne okna gry
 extern struct config cfg;       // definicja zewnętrznej struktury z podstawową konfiguracją gry
+
+int random = 0;
 
 // funkcja inicjująca zmienne okna gry i źródła eventów
 int game_init(struct game_window* game, struct config cfg)
@@ -89,6 +93,8 @@ bool check_err_state(code)
 
 int main()
 {
+    srand(time(NULL));
+
 
     int code = game_init(&game, cfg);
 
@@ -106,8 +112,9 @@ int main()
     /* PRZYKŁADOWE WYGENEROWANIE PLANSZY */
     generate_board(100, 100);   // wygeneruj plansze w koordynatach (100,100)
     draw_board();               // rysuj plansze
-    insert_node(0, 2, 2);       // wstaw klocek który w tablicy 2D ma koordynaty 0,2 z wartością 2
-    draw_board();               // narysuj planszę z wstawionym klockiem
+    random = rand() % 4;        
+    printf("%d", random);      //pokazuje w konsoli jaka została wylosowana liczba i jaka powina się znajdować w grze
+   
 
     // główna pętla gry
     while (running)
@@ -120,8 +127,9 @@ int main()
             
             /* LOGIKA GRY */
             //example_render();   // przykładowy element logiki
-
-            al_flip_display();  // rysowanie
+            insert_node(random,random, 2);       // wstaw klocek który w tablicy 2D ma koordynaty random,2 z wartością 2
+            draw_board();               // narysuj planszę z wstawionym klockiem
+            al_flip_display(); // rysowanie
             break;
 
         case ALLEGRO_EVENT_KEY_UP:          // event "klawisz spuszczony"
