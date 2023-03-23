@@ -2,6 +2,8 @@
 
 #pragma once // zapewnienie ¿e dany plik nag³ówkowy bêdzie za³¹czony tylko raz
 
-void generate_board();						// funkcja generuj¹ca planszê
-void draw_board();							// funkcja rysuj¹ca planszê
-void insert_node(int x, int y, int value);	// funkcja wstawiaj¹ca element do planszy
+void initialize_board();			// funkcja inicjuj¹ca planszê gry
+void initialize_nodes(int, int);	// funkcja inicjuj¹ca klocki
+void board_cleanup();				// funkcja zwalniaj¹ca pamiêæ zaalokowan¹ dla planszy gry
+void draw_board();					// funkcja rysuj¹ca planszê
+void insert_node(int, int, int);	// funkcja wstawiaj¹ca element do planszy

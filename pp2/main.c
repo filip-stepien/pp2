@@ -52,50 +52,48 @@ void game_cleanup(struct game_window* game)
     game = NULL;                            // wyzerowanie struktury ze zmiennymi gry
 }
 
-
+// funkcja wypisująca błąd przy uruchomieniu gry
+// przyjmuje kod uruchomienia jako argument
 bool check_err_state(code)
 {
-
     switch (code)
     {
-    case 0:
-        return false;
+        case 0:
+            return false;
 
-    case 100:
-        puts("Niepoprawna inicjalizacja gry. \n Kod bledu 100");
-        return true;
+        case 100:
+            puts("Niepoprawna inicjalizacja gry. \n Kod bledu 100");
+            return true;
 
-    case 101:
-        puts("Klawiatura nie zostala zinicjalizowana poprawnie. \n kod bledu 101");
-        return true;
+        case 101:
+            puts("Klawiatura nie zostala zinicjalizowana poprawnie. \n kod bledu 101");
+            return true;
 
-    case 102:
-        puts("Okno nie zostalo zainicjalizowane poprawnie. \n kod bledu 102");
-        return true;
+        case 102:
+            puts("Okno nie zostalo zainicjalizowane poprawnie. \n kod bledu 102");
+            return true;
 
-    case 103:
-        puts("Kolejka nie zostala zainicjalizowana poprawnie. \n kod bledu 103");
-        return true;
+        case 103:
+            puts("Kolejka nie zostala zainicjalizowana poprawnie. \n kod bledu 103");
+            return true;
 
-    case 104:
-        puts("Czcionka nie zostala zainicjalizowana poprawnie. \n kod bledu 104");
-        return true;
+        case 104:
+            puts("Czcionka nie zostala zainicjalizowana poprawnie. \n kod bledu 104");
+            return true;
 
-    case 105:
-        puts("Licznik nie zostal zainicjalizowany poprawnie. \n kod bledu 105");
-        return true;
+        case 105:
+            puts("Licznik nie zostal zainicjalizowany poprawnie. \n kod bledu 105");
+            return true;
     }
 }
 
 int main()
 {
+    int code = game_init(&game, cfg); // generacja kodu uruchomienia gry
 
-    int code = game_init(&game, cfg);
-
+    // jeżeli wystąpi błąd, zamknij grę i wygeneruj wiadomość z błędem
     bool err = check_err_state(code);
     if (err) return -1;
-    
-    
 
     game_init(&game, cfg);      // inicjalizacja gry
     al_start_timer(game.timer); // start licznika gry
@@ -104,10 +102,10 @@ int main()
     ALLEGRO_EVENT event;        // zmienna w której znajdzie się przechwycony event
 
     /* PRZYKŁADOWE WYGENEROWANIE PLANSZY */
-    generate_board(100, 100);   // wygeneruj plansze w koordynatach (100,100)
-    draw_board();               // rysuj plansze
-    insert_node(0, 2, 2);       // wstaw klocek który w tablicy 2D ma koordynaty 0,2 z wartością 2
-    draw_board();               // narysuj planszę z wstawionym klockiem
+    initialize_board();           // zainicjalizuj planszę gry
+    initialize_nodes(100, 100);   // zainicjuj plansze, która będzie generowana w koordynatach (100,100)
+    insert_node(0, 2, 2);         // wstaw klocek który w tablicy 2D ma koordynaty 0,2 z wartością 2
+    draw_board();                 // narysuj planszę z wstawionym klockiem
 
     // główna pętla gry
     while (running)
@@ -131,6 +129,7 @@ int main()
         }
     }
 
+    board_cleanup();
     game_cleanup(&game);    // czyszczenie po zakończeniu gry
 
     return 0;

@@ -1,14 +1,8 @@
 #include "game_board.h" // za³adowanie definicji z pliku nag³ówkowego
 #include "game_data.h"  // plik nag³ówkowy z podstawowymi strukturami gry
-#include <string.h>
 
 extern struct game_window game; // definicja zewnêtrznej struktury zawieraj¹cej g³ówne zmienne okna gry
 extern struct config cfg;       // definicja zewnêtrznej struktury z podstawow¹ konfiguracj¹ gry
-
-int x_size = 4;			// maksymalna iloœæ klocków na osi X
-int y_size = 4;			// maksymalna iloœæ klocków na osi Y
-int node_size = 100;	// wielkoœæ klocka (px)
-int gap = 10;			// wielkoœæ przerwy miêdzy klockami (10px)
 
 struct node {
 	int value;				// wartoœæ, jak¹ przechowuje klocek (2, 4, 8, 16, 32...)
@@ -20,18 +14,41 @@ struct node {
 	ALLEGRO_COLOR color;	// kolor klocka
 };
 
-struct node board[4][4];	// tablica 2D reprezentuj¹ca planszê
+struct game_board {
+	int x_size;						// maksymalna iloœæ klocków na osi X
+	int y_size;						// maksymalna iloœæ klocków na osi Y
+	int node_size;					// wielkoœæ klocka (px)
+	int gap;						// wielkoœæ przerwy miêdzy klockami (10px)
+	struct node** board_array;		// plansza z klockami
+} board;
 
-// funkcja wstêpnie wype³niaj¹ca planszê (tablicê 2D) klockami o wartoœci 0
+// funkcja inicjuj¹ca planszê gry
+void initialize_board()
+{
+	// przypisanie strukturze board zmiennych ze struktury config zawieraj¹c¹ konfiguracjê gry
+	board.x_size = cfg.board_x_size;
+	board.y_size = cfg.board_y_size;
+	board.node_size = cfg.board_node_size;
+	board.gap = cfg.board_gap;
+
+	// dynamiczna alokacja pamiêci dla planszy z klockami
+	board.board_array = (struct node **)calloc(board.y_size, sizeof(struct node *));
+
+	int i;
+	for (i = 0; i < board.y_size; i++)
+		board.board_array[i] = (struct node *)calloc(board.x_size, sizeof(struct node));
+}
+
+// funkcja wstêpnie inicjuj¹ca klocki
 // przyjmuje koordynaty x i y, w których ma zostaæ wygenerowana plansza
-void generate_board(int board_x, int board_y)
+void initialize_nodes(int render_x, int render_y)
 {
 	int i, j;
-	int x = board_x, y = board_y;	// liczenie koordynatów x i y rozpoczyna siê od koordynatów w których ma znajdowaæ siê plansza
+	int x = render_x, y = render_y;	// liczenie koordynatów x i y rozpoczyna siê od koordynatów w których ma znajdowaæ siê plansza
 
-	for (i = 0; i < y_size; i++)
+	for (i = 0; i < board.y_size; i++)
 	{
-		for (j = 0; j < x_size; j++)
+		for (j = 0; j < board.x_size; j++)
 		{
 			struct node current_node = { 
 				0,							// pocz¹tkowa wartoœæ klocka
@@ -39,19 +56,19 @@ void generate_board(int board_x, int board_y)
 				x,							// klocki rysowane s¹ od lewego górnego rogu a wiêc górne x i y to kolejne
 				y,							// wielokrotnoœci d³ugoœci boku i przerwy miêdzy nimi licz¹c od zera (patrz ni¿ej)
 
-				x + node_size,				// aby otrzymaæ "dolne" x i y, ka¿dorazowo nale¿y
-				y + node_size,				// dodaæ do nich d³ugoœæ boku (patrz ni¿ej)
+				x + board.node_size,		// aby otrzymaæ "dolne" x i y, ka¿dorazowo nale¿y
+				y + board.node_size,		// dodaæ do nich d³ugoœæ boku (patrz ni¿ej)
 
-				node_size,					// d³ugoœæ boku
+				board.node_size,			// d³ugoœæ boku
 				al_map_rgb(255, 255, 255)	// kolor klocka
 			};
 
-			board[i][j] = current_node;		// wstawianie wygenerowanego klocka do tablicy
-			x += node_size + gap;			// kolejna iteracja na osi X = zwiêkszenie x o d³ugoœæ boku i przerwê miêdzy klockami
+			board.board_array[i][j] = current_node;		// wstawianie wygenerowanego klocka do tablicy
+			x += board.node_size + board.gap;			// kolejna iteracja na osi X = zwiêkszenie x o d³ugoœæ boku i przerwê miêdzy klockami
 		}
 
-		x = board_x;			// resetowanie x do pocz¹tkowej wartoœci, aby rozpocz¹æ od pocz¹tku wiersza
-		y += node_size + gap;	// kolejna iteracja na osi Y = zwiêkszenie y o d³ugoœæ boku i przerwê miêdzy klockami
+		x = render_x;						// resetowanie x do pocz¹tkowej wartoœci, aby rozpocz¹æ od pocz¹tku wiersza
+		y += board.node_size + board.gap;	// kolejna iteracja na osi Y = zwiêkszenie y o d³ugoœæ boku i przerwê miêdzy klockami
 	}
 
 	/*
@@ -79,15 +96,27 @@ void generate_board(int board_x, int board_y)
 	*/
 }
 
+// funkcja zwalniaj¹ca pamiêæ zaalokowan¹ dla planszy gry
+void board_cleanup()
+{
+	// zwalnianie pamiêci w kolejnoœci odwrotnej w stosunku do alokacji
+	int i;
+	for (i = board.y_size - 1; i >= 0; i--)
+		free(board.board_array[i]);
+
+	free(board.board_array);
+	board.board_array = NULL;	// unikniêciê "wisz¹cego wskaŸnika"
+}
+
 // funkcja rysuj¹ca planszê
 void draw_board()
 {
 	int i, j;
-	for (i = 0; i < y_size; i++)
+	for (i = 0; i < board.y_size; i++)
 	{
-		for(j = 0; j < x_size; j++)
+		for(j = 0; j < board.x_size; j++)
 		{
-			struct node current_node = board[i][j];	// aktualnie rysowany klocek
+			struct node current_node = board.board_array[i][j];	// aktualnie rysowany klocek
 
 			// rysowanie klocka, wykorzystuj¹c pola wygenerowane funkcj¹ generate_board()
 			al_draw_filled_rectangle(
@@ -116,9 +145,10 @@ void draw_board()
 }
 
 // funkcja wstawiaj¹ca klocek do planszy
+// przyjmuje koordynaty klocka na planszy i wartoœæ klocka
 void insert_node(int x, int y, int value)
 {
-	struct node *current_node = &board[y][x];		// aktualnie wstawiany klocek
-	current_node->value = value;					// zmiana wartoœæi klocka (od teraz bêdzie rysowany)
-	current_node->color = al_map_rgb(255, 0, 0);	// zmiana koloru klocka
+	struct node *current_node = &board.board_array[y][x];	// aktualnie wstawiany klocek
+	current_node->value = value;							// zmiana wartoœæi klocka (od teraz bêdzie rysowany)
+	current_node->color = al_map_rgb(255, 0, 0);			// zmiana koloru klocka
 }
