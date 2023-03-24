@@ -104,32 +104,63 @@ int main()
     /* PRZYKŁADOWE WYGENEROWANIE PLANSZY */
     initialize_board();           // zainicjalizuj planszę gry
     initialize_nodes(100, 100);   // zainicjuj plansze, która będzie generowana w koordynatach (100,100)
-    insert_node(0, 2, 2);         // wstaw klocek który w tablicy 2D ma koordynaty 0,2 z wartością 2
-    draw_board();                 // narysuj planszę z wstawionym klockiem
+
+    // wstawianie przykladowych klocków (x, y, wartość_klocka)
+    insert_node(2, 2, 2);
+    insert_node(2, 3, 4);
+    insert_node(3, 3, 2);
+    insert_node(0, 3, 4);
+    insert_node(2, 1, 2);
+    insert_node(0, 0, 8);
+
+    draw_board();                 // rysowanie planszy z wstawionymi klockami
+    al_flip_display();            // wyświetlanie narysowanej klatki
 
     // główna pętla gry
     while (running)
     {
-
         al_wait_for_event(game.queue, &event);  // nasłuchuj eventów
         switch (event.type)
         {
-        case ALLEGRO_EVENT_TIMER:   // event pojedynczego tyknięcia licznika
-            
-            /* LOGIKA GRY */
-            //example_render();   // przykładowy element logiki
+            case ALLEGRO_EVENT_KEY_DOWN:        // event "przycisk wciśnięty"
+                switch (event.keyboard.keycode)
+                {
+                    case ALLEGRO_KEY_UP:        // przycisk - strzałka w górę
+                        stack_up();
+                        move_up();
+                        break;
 
-            al_flip_display();  // rysowanie
-            break;
+                    case ALLEGRO_KEY_DOWN:      // przycisk - strzałka w dół
+                        stack_down();
+                        move_down();
+                        break;
 
-        case ALLEGRO_EVENT_KEY_UP:          // event "klawisz spuszczony"
-        case ALLEGRO_EVENT_DISPLAY_CLOSE:   // event "zamknięcie okna"
-            running = false;                // przerwanie pętli
-            break;
+                    case ALLEGRO_KEY_LEFT:      // przycisk - strzałka w lewo
+                        stack_left();
+                        move_left();
+                        break;
+
+                    case ALLEGRO_KEY_RIGHT:     // przycisk - strzałka w prawo
+                        stack_right();
+                        move_right();
+                        break;
+                    case ALLEGRO_KEY_ESCAPE:    // przycisk - esc
+                        running = false;        // przerwanie pętli
+                        break;
+                }
+
+                // debug_print_board(); <-- funkcja do debugowania
+                draw_board();      // rysowanie planszy
+                al_flip_display(); // wyświetlanie narysowanej klatki
+                break;
+
+            case ALLEGRO_EVENT_DISPLAY_CLOSE:   // event "zamknięcie okna"
+                running = false;                // przerwanie pętli
+                break;
         }
     }
 
-    board_cleanup();
+    board_cleanup();        // zwolnienie pamięci zaalokowanej dla planszy gry
     game_cleanup(&game);    // czyszczenie po zakończeniu gry
 
     return 0;
