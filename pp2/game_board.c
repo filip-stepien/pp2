@@ -1,5 +1,6 @@
 #include "game_board.h" // za³adowanie definicji z pliku nag³ówkowego
 #include "game_data.h"  // plik nag³ówkowy z podstawowymi strukturami gry
+#include <stdio.h>
 
 extern struct game_window game; // definicja zewnêtrznej struktury zawieraj¹cej g³ówne zmienne okna gry
 extern struct config cfg;       // definicja zewnêtrznej struktury z podstawow¹ konfiguracj¹ gry
@@ -132,12 +133,12 @@ void draw_board()
 				// rysowanie wartoœci wewn¹trz klocka
 				al_draw_textf(
 					game.font,
-					al_map_rgb(255, 255, 255),
+					al_map_rgb(0, 0, 0),
 					current_node.top_x + current_node.size / 2,						// po³owa klocka na osi X = górne x + po³owa d³ugoœci boku
 					current_node.top_y + current_node.size / 2 - cfg.font_size / 2,	// po³owa klocka na osi Y = y + po³owa d³ugoœci boku, dalsza czêœæ - patrz ni¿ej
 					ALLEGRO_ALIGN_CENTER,	// wycentrowanie tekstu przez allegro, ale tylko w osi X, w osi Y nale¿y odj¹æ od y po³owê wielkoœci czcionki
 					"%d",					// ci¹g formatuj¹cy rysowany tekst
-					current_node.top_y		// tekst do narysowania
+					current_node.value		// tekst do narysowania
 				);
 			}
 		}
@@ -148,7 +149,184 @@ void draw_board()
 // przyjmuje koordynaty klocka na planszy i wartoœæ klocka
 void insert_node(int x, int y, int value)
 {
-	struct node *current_node = &board.board_array[y][x];	// aktualnie wstawiany klocek
-	current_node->value = value;							// zmiana wartoœæi klocka (od teraz bêdzie rysowany)
-	current_node->color = al_map_rgb(255, 0, 0);			// zmiana koloru klocka
+	board.board_array[y][x].value = value;
+}
+
+// funkcja do debugowania wypisuj¹ca planszê w terminalu
+void debug_print_board()
+{
+	int i, j;
+	for(i = 0; i < board.y_size; i++)
+	{
+		for (j = 0; j < board.x_size; j++) 
+		{
+			printf("%d\t", board.board_array[i][j].value);
+		}
+		printf("\n");
+	}
+}
+
+
+// funkcje przesuwaj¹ce klocki 
+// TODO: OPISAÆ DZIA£ANIE
+void move_down() {
+	int row, col, i;
+	for (row = 0; row < board.y_size; row++) {
+		for (col = 0; col < board.x_size; col++) {
+			for (i = 0; i < board.y_size - 1; i++) {
+				if (board.board_array[i+1][row].value == 0) {
+					board.board_array[i+1][row].value = board.board_array[i][row].value;
+					board.board_array[i][row].value = 0;
+				}
+			}
+		}
+	}
+}
+
+void move_up() {
+	int row, col, i;
+	for (row = 0; row < board.y_size; row++) {
+		for (col = 0; col < board.x_size; col++) {
+			for (i = 1; i < board.y_size; i++) {
+				if (board.board_array[i-1][row].value == 0) {
+					board.board_array[i-1][row].value = board.board_array[i][row].value;
+					board.board_array[i][row].value = 0;
+				}
+			}
+		}
+	}
+}
+
+void move_right() {
+	int row, col, i;
+	for (row = 0; row < board.y_size; row++) {
+		for (col = 0; col < board.x_size; col++) {
+			for (i = 0; i < board.y_size - 1; i++) {
+				if (board.board_array[col][i+1].value == 0) {
+					board.board_array[col][i+1].value = board.board_array[col][i].value;
+					board.board_array[col][i].value = 0;
+				}
+			}
+		}
+	}
+}
+
+void move_left() {
+	int row, col, i;
+	for (row = 0; row < board.y_size; row++) {
+		for (col = 0; col < board.x_size; col++) {
+			for (i = 1; i < board.y_size; i++) {
+				if (board.board_array[col][i - 1].value == 0) {
+					board.board_array[col][i - 1].value = board.board_array[col][i].value;
+					board.board_array[col][i].value = 0;
+				}
+			}
+		}
+	}
+}
+
+// funkcje ³¹cz¹ce klocki
+// TODO: OPISAÆ DZIA£ANIE
+void stack_down() {
+	int i, j, stacked = -1;
+	for (i = 2; i >= 0; i--) 
+	{
+		for (j = 0; j < 4; j++) 
+		{
+			if (board.board_array[i][j].value == 0) continue;
+			int k = i + 1;
+			while (k < 4) 
+			{
+				if (board.board_array[k][j].value == 0) k++;                            
+				else 
+				{
+					if (board.board_array[k][j].value == board.board_array[i][j].value && board.board_array[k][j].value != stacked)
+					{
+						board.board_array[k][j].value *= 2;
+						board.board_array[i][j].value = 0;
+						stacked = board.board_array[k][j].value;
+					}
+					break;
+				}
+			}
+		}
+	}
+}
+
+void stack_up() {
+	int i, j, stacked = -1;
+	for (i = 1; i < 4; i++)
+	{
+		for (j = 0; j < 4; j++)
+		{
+			if (board.board_array[i][j].value == 0) continue;
+			int k = i - 1;
+			while (k >= 0)
+			{
+				if (board.board_array[k][j].value == 0) k--;
+				else
+				{
+					if (board.board_array[k][j].value == board.board_array[i][j].value && board.board_array[k][j].value != stacked)
+					{
+						board.board_array[k][j].value *= 2;
+						board.board_array[i][j].value = 0;
+						stacked = board.board_array[k][j].value;
+					}
+					break;
+				}
+			}
+		}
+	}
+}
+
+void stack_right() {
+	int i, j, stacked = -1;
+	for (i = 0; i < 4; i++)
+	{
+		for (j = 2; j >= 0; j--)
+		{
+			if (board.board_array[i][j].value == 0) continue;
+			int k = j + 1;
+			while (k < 4)
+			{
+				if (board.board_array[i][k].value == 0) k++;
+				else
+				{
+					if (board.board_array[i][k].value == board.board_array[i][j].value && board.board_array[i][k].value != stacked)
+					{
+						board.board_array[i][k].value *= 2;
+						board.board_array[i][j].value = 0;
+						stacked = board.board_array[i][k].value;
+					}
+					break;
+				}
+			}
+		}
+	}
+}
+
+void stack_left() {
+	int i, j, stacked = -1;
+	for (i = 0; i < 4; i++)
+	{
+		for (j = 1; j < 4; j++)
+		{
+			if (board.board_array[i][j].value == 0) continue;
+			int k = j - 1;
+			while (k >= 0)
+			{
+				if (board.board_array[i][k].value == 0) k--;
+				else
+				{
+					if (board.board_array[i][k].value == board.board_array[i][j].value && board.board_array[i][k].value != stacked)
+					{
+						board.board_array[i][k].value *= 2;
+						board.board_array[i][j].value = 0;
+						stacked = board.board_array[i][k].value;
+					}
+					break;
+				}
+			}
+		}
+	}
 }
