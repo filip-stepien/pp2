@@ -19,6 +19,14 @@ struct config {
     int board_y_size;					// maksymalna iloœæ klocków na osi Y
     int board_node_size;				// wielkoœæ klocka (px)
     int board_gap;						// wielkoœæ przerwy miêdzy klockami (10px)
+    int node_min_interpolation;
+    int node_max_interpolation;
+    unsigned char node_min_color_r;
+    unsigned char node_min_color_g;
+    unsigned char node_min_color_b;
+    unsigned char node_max_color_r;
+    unsigned char node_max_color_g;
+    unsigned char node_max_color_b;
 };
 
 // struktura zawieraj¹ca g³ówne zmienne okna gry

@@ -106,9 +106,9 @@ int main()
     /* PRZYKŁADOWE WYGENEROWANIE PLANSZY */
     initialize_board();           // zainicjalizuj planszę gry
     initialize_nodes(100, 100);   // zainicjuj plansze, która będzie generowana w koordynatach (100,100)
-
+    
     generate_random_node();
-
+    color_nodes();
     draw_board();                 // rysowanie planszy z wstawionymi klockami
     al_flip_display();            // wyświetlanie narysowanej klatki
 
@@ -146,6 +146,7 @@ int main()
                 }
 
                 // debug_print_board(); <-- funkcja do debugowania
+                color_nodes();
                 draw_board();      // rysowanie planszy
                 al_flip_display(); // wyświetlanie narysowanej klatki
                 break;
