@@ -1,5 +1,6 @@
 ﻿#include <stdio.h>
 #include <stdbool.h>
+#include <time.h>
 #include "game_data.h" // plik nagłówkowy z podstawowymi strukturami gry
 
 /* Pliki nagłówkowe z logiką gry */
@@ -89,6 +90,7 @@ bool check_err_state(code)
 
 int main()
 {
+    srand(time(NULL));
     int code = game_init(&game, cfg); // generacja kodu uruchomienia gry
 
     // jeżeli wystąpi błąd, zamknij grę i wygeneruj wiadomość z błędem
@@ -105,13 +107,7 @@ int main()
     initialize_board();           // zainicjalizuj planszę gry
     initialize_nodes(100, 100);   // zainicjuj plansze, która będzie generowana w koordynatach (100,100)
 
-    // wstawianie przykladowych klocków (x, y, wartość_klocka)
-    insert_node(2, 2, 2);
-    insert_node(2, 3, 4);
-    insert_node(3, 3, 2);
-    insert_node(0, 3, 4);
-    insert_node(2, 1, 2);
-    insert_node(0, 0, 8);
+    generate_random_node();
 
     draw_board();                 // rysowanie planszy z wstawionymi klockami
     al_flip_display();            // wyświetlanie narysowanej klatki

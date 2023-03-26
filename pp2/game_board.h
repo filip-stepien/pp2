@@ -16,3 +16,4 @@ void stack_down();
 void stack_up();
 void stack_right();
 void stack_left();
+void generate_random_node();

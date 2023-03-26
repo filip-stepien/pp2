@@ -1,6 +1,7 @@
 #include "game_board.h" // za³adowanie definicji z pliku nag³ówkowego
 #include "game_data.h"  // plik nag³ówkowy z podstawowymi strukturami gry
 #include <stdio.h>
+#include <time.h>
 
 extern struct game_window game; // definicja zewnêtrznej struktury zawieraj¹cej g³ówne zmienne okna gry
 extern struct config cfg;       // definicja zewnêtrznej struktury z podstawow¹ konfiguracj¹ gry
@@ -181,6 +182,7 @@ void move_down() {
 			}
 		}
 	}
+	generate_random_node();
 }
 
 void move_up() {
@@ -195,6 +197,7 @@ void move_up() {
 			}
 		}
 	}
+	generate_random_node();
 }
 
 void move_right() {
@@ -209,6 +212,7 @@ void move_right() {
 			}
 		}
 	}
+	generate_random_node();
 }
 
 void move_left() {
@@ -223,6 +227,7 @@ void move_left() {
 			}
 		}
 	}
+	generate_random_node();
 }
 
 // funkcje ³¹cz¹ce klocki
@@ -329,4 +334,27 @@ void stack_left() {
 			}
 		}
 	}
+}
+
+void generate_random_node()
+{
+	int col, row;
+	int random;
+	col = rand() % 4;
+	row = rand() % 4;
+
+	if(board.board_array[col][row].value == 0)
+	{
+		random = rand() % 10 + 1;             //10% szans na wygenerowanie klocka o wartosci 2
+		if (random == 1)
+		{
+            board.board_array[col][row].value = 4;
+		}
+		else
+		{
+			board.board_array[col][row].value = 2;
+		}
+		
+	}
+
 }
