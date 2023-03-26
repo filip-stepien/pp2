@@ -17,3 +17,4 @@ void stack_up();
 void stack_right();
 void stack_left();
 void generate_random_node();
+void color_nodes();

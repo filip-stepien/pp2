@@ -2,6 +2,7 @@
 #include "game_data.h"  // plik nag³ówkowy z podstawowymi strukturami gry
 #include <stdio.h>
 #include <time.h>
+#include <math.h>
 
 extern struct game_window game; // definicja zewnêtrznej struktury zawieraj¹cej g³ówne zmienne okna gry
 extern struct config cfg;       // definicja zewnêtrznej struktury z podstawow¹ konfiguracj¹ gry
@@ -357,4 +358,39 @@ void generate_random_node()
 		
 	}
 
+}
+
+// funkcja mapuj¹ca wartoœæ klocka (miêdzy node_min_interpolation a node_max_interpolation z konfiguracji)
+// na kolor rgb (miêdzy node_min_color_(...) a node_max_color_(...))
+ALLEGRO_COLOR interpolate_node_color(struct node target)
+{
+	if (target.value < cfg.node_min_interpolation) return al_map_rgb(255, 255, 255); // je¿eli wartoœæ klocka jest <2 to zwróæ bia³y kolor
+	if (target.value > cfg.node_max_interpolation)	// je¿eli wartoœæ klocka jest >2048 to zwróæ kolor z konfiguracji
+		return al_map_rgb(
+			cfg.node_max_color_r,
+			cfg.node_max_color_g,
+			cfg.node_max_color_b
+		);
+
+	// mapowanie wartoœci 2, 4, 8, 16 ... na zakres od 1 do log z maksymalnej wartoœci z konfiguracji (2048 = 11)
+	double log_value = log2(target.value);
+	double log_max = log2(cfg.node_max_interpolation);
+	double normalized_value = log_value / log_max;		// mapowanie otrzymanego zakresu na wartosci od 0 do 1
+
+	// zamiana otrzymanej wartosci na nowy kolor rgb
+	unsigned char r = round(cfg.node_min_color_r + (cfg.node_max_color_r - cfg.node_min_color_r) * normalized_value);
+	unsigned char g = round(cfg.node_min_color_g + (cfg.node_max_color_g - cfg.node_min_color_g) * normalized_value);
+	unsigned char b = round(cfg.node_min_color_b + (cfg.node_max_color_b - cfg.node_min_color_b) * normalized_value);
+
+	// zwrócenie koloru rgb w postaci struktury ALLEGRO_COLOR
+	return al_map_rgb(r, g, b);
+}
+
+// funkcja koloruj¹ca ka¿dy klocek zale¿nie od jego wartoœci
+void color_nodes()
+{
+	int i, j;
+	for (i = 0; i < board.y_size; i++)
+		for (j = 0; j < board.x_size; j++)
+			board.board_array[i][j].color = interpolate_node_color(board.board_array[i][j]);
 }
