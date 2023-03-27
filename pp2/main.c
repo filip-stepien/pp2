@@ -107,10 +107,10 @@ int main()
     initialize_board();           // zainicjalizuj planszę gry
     initialize_nodes(100, 100);   // zainicjuj plansze, która będzie generowana w koordynatach (100,100)
     
-    generate_random_node();
-    color_nodes();
-    draw_board();                 // rysowanie planszy z wstawionymi klockami
-    al_flip_display();            // wyświetlanie narysowanej klatki
+    generate_random_node();     // generowanie losowego klocka
+    color_nodes();              // kolorowanie klocków
+    draw_board();               // rysowanie planszy z wstawionymi klockami
+    al_flip_display();          // wyświetlanie narysowanej klatki
 
     // główna pętla gry
     while (running)
@@ -140,15 +140,22 @@ int main()
                         stack_right();
                         move_right();
                         break;
+                    case ALLEGRO_KEY_R:         // przycisk - r
+                        reset_board();          // zresetuj planszę
+                        break;
                     case ALLEGRO_KEY_ESCAPE:    // przycisk - esc
                         running = false;        // przerwanie pętli
                         break;
                 }
 
                 // debug_print_board(); <-- funkcja do debugowania
-                color_nodes();
-                draw_board();      // rysowanie planszy
-                al_flip_display(); // wyświetlanie narysowanej klatki
+                generate_random_node(); // generowanie losowego klocka
+                color_nodes();          // kolorowanie klocków
+                draw_board();           // rysowanie planszy
+                al_flip_display();      // wyświetlanie narysowanej klatki
+
+                if (did_game_end()) printf("KONIEC");   // komunikat o końcu gry
+
                 break;
 
             case ALLEGRO_EVENT_DISPLAY_CLOSE:   // event "zamknięcie okna"

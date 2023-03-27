@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <math.h>
+#include <stdbool.h>
 
 extern struct game_window game; // definicja zewnêtrznej struktury zawieraj¹cej g³ówne zmienne okna gry
 extern struct config cfg;       // definicja zewnêtrznej struktury z podstawow¹ konfiguracj¹ gry
@@ -22,6 +23,8 @@ struct game_board {
 	int y_size;						// maksymalna iloœæ klocków na osi Y
 	int node_size;					// wielkoœæ klocka (px)
 	int gap;						// wielkoœæ przerwy miêdzy klockami (10px)
+	bool first_turn;
+	struct node** prev_board_array;
 	struct node** board_array;		// plansza z klockami
 } board;
 
@@ -33,13 +36,18 @@ void initialize_board()
 	board.y_size = cfg.board_y_size;
 	board.node_size = cfg.board_node_size;
 	board.gap = cfg.board_gap;
+	board.first_turn = true;
 
 	// dynamiczna alokacja pamiêci dla planszy z klockami
 	board.board_array = (struct node **)calloc(board.y_size, sizeof(struct node *));
+	board.prev_board_array = (struct node**)calloc(board.y_size, sizeof(struct node*));
 
 	int i;
-	for (i = 0; i < board.y_size; i++)
-		board.board_array[i] = (struct node *)calloc(board.x_size, sizeof(struct node));
+	for (i = 0; i < board.y_size; i++) 
+	{
+		board.board_array[i] = (struct node*)calloc(board.x_size, sizeof(struct node));
+		board.prev_board_array[i] = (struct node*)calloc(board.x_size, sizeof(struct node));
+	}
 }
 
 // funkcja wstêpnie inicjuj¹ca klocki
@@ -168,6 +176,67 @@ void debug_print_board()
 	}
 }
 
+// funkcja do zapisu stanu planszy
+void save_board()
+{
+	int i, j;
+	for (i = 0; i < board.y_size; i++)
+		for (j = 0; j < board.x_size; j++)
+			board.prev_board_array[i][j].value = board.board_array[i][j].value;
+}
+
+// funkcja do resetu planszy
+void reset_board()
+{
+	int i, j;
+	for (i = 0; i < board.y_size; i++)
+	{
+		for (j = 0; j < board.x_size; j++)
+		{
+			board.prev_board_array[i][j].value = 0;	// wyzerowanie zapisanej planszy gry
+			board.board_array[i][j].value = 0;		// wyzerowanie aktulanej planszy gry
+		}
+	}
+
+	board.first_turn = true;	// nowa gra zacznie siê od pierwszej tury
+}
+
+// funkcja sprawdzaj¹ca czy na planszy nast¹pi³ ruch
+bool did_board_change()
+{
+	int i, j;
+	for (i = 0; i < board.y_size; i++)
+	{
+		for (j = 0; j < board.x_size; j++)
+		{
+			if (board.prev_board_array[i][j].value != board.board_array[i][j].value)	// porównanie planszy aktualnej z zapisan¹
+				return true;
+		}
+	}
+
+	return false;
+}
+
+// funkcja sprawdzaj¹ca czy mo¿liwe jest wykonanie ruchu na planszy
+bool did_game_end() 
+{
+	int i, j;
+	for (i = 0; i < board.y_size; i++) {
+		for (j = 0; j < board.x_size; j++) {
+			if (board.board_array[i][j].value == 0)
+				return false;
+			if (i > 0 && board.board_array[i][j].value == board.board_array[i - 1][j].value)
+				return false;
+			if (j > 0 && board.board_array[i][j].value == board.board_array[i][j - 1].value)
+				return false;
+			if (i < board.y_size - 1 && board.board_array[i][j].value == board.board_array[i + 1][j].value)
+				return false;
+			if (j < board.x_size - 1 && board.board_array[i][j].value == board.board_array[i][j + 1].value)
+				return false;
+		}
+	}
+	return true;
+}
 
 // funkcje przesuwaj¹ce klocki 
 // TODO: OPISAÆ DZIA£ANIE
@@ -176,14 +245,13 @@ void move_down() {
 	for (row = 0; row < board.y_size; row++) {
 		for (col = 0; col < board.x_size; col++) {
 			for (i = 0; i < board.y_size - 1; i++) {
-				if (board.board_array[i+1][row].value == 0) {
+				if (board.board_array[i+1][row].value == 0 && board.board_array[i][row].value != 0) {
 					board.board_array[i+1][row].value = board.board_array[i][row].value;
 					board.board_array[i][row].value = 0;
 				}
 			}
 		}
 	}
-	generate_random_node();
 }
 
 void move_up() {
@@ -191,14 +259,13 @@ void move_up() {
 	for (row = 0; row < board.y_size; row++) {
 		for (col = 0; col < board.x_size; col++) {
 			for (i = 1; i < board.y_size; i++) {
-				if (board.board_array[i-1][row].value == 0) {
+				if (board.board_array[i-1][row].value == 0 && board.board_array[i][row].value != 0) {
 					board.board_array[i-1][row].value = board.board_array[i][row].value;
 					board.board_array[i][row].value = 0;
 				}
 			}
 		}
 	}
-	generate_random_node();
 }
 
 void move_right() {
@@ -206,14 +273,14 @@ void move_right() {
 	for (row = 0; row < board.y_size; row++) {
 		for (col = 0; col < board.x_size; col++) {
 			for (i = 0; i < board.y_size - 1; i++) {
-				if (board.board_array[col][i+1].value == 0) {
+				if (board.board_array[col][i+1].value == 0 && board.board_array[col][i].value != 0) 
+				{
 					board.board_array[col][i+1].value = board.board_array[col][i].value;
 					board.board_array[col][i].value = 0;
 				}
 			}
 		}
 	}
-	generate_random_node();
 }
 
 void move_left() {
@@ -221,20 +288,20 @@ void move_left() {
 	for (row = 0; row < board.y_size; row++) {
 		for (col = 0; col < board.x_size; col++) {
 			for (i = 1; i < board.y_size; i++) {
-				if (board.board_array[col][i - 1].value == 0) {
+				if (board.board_array[col][i - 1].value == 0 && board.board_array[col][i].value != 0) {
 					board.board_array[col][i - 1].value = board.board_array[col][i].value;
 					board.board_array[col][i].value = 0;
 				}
 			}
 		}
 	}
-	generate_random_node();
 }
 
 // funkcje ³¹cz¹ce klocki
 // TODO: OPISAÆ DZIA£ANIE
 void stack_down() {
 	int i, j, stacked = -1;
+	save_board();
 	for (i = 2; i >= 0; i--) 
 	{
 		for (j = 0; j < 4; j++) 
@@ -261,6 +328,7 @@ void stack_down() {
 
 void stack_up() {
 	int i, j, stacked = -1;
+	save_board();
 	for (i = 1; i < 4; i++)
 	{
 		for (j = 0; j < 4; j++)
@@ -287,6 +355,7 @@ void stack_up() {
 
 void stack_right() {
 	int i, j, stacked = -1;
+	save_board();
 	for (i = 0; i < 4; i++)
 	{
 		for (j = 2; j >= 0; j--)
@@ -313,6 +382,7 @@ void stack_right() {
 
 void stack_left() {
 	int i, j, stacked = -1;
+	save_board();
 	for (i = 0; i < 4; i++)
 	{
 		for (j = 1; j < 4; j++)
@@ -337,27 +407,36 @@ void stack_left() {
 	}
 }
 
+// funkcja generuj¹ca losowy klocek
 void generate_random_node()
 {
 	int col, row;
 	int random;
-	col = rand() % 4;
-	row = rand() % 4;
+	bool inserted = false;	// zmienna steruj¹ca pêtl¹ od generowania klocka
+	bool changed = did_board_change();	// sprawdzenie, czy plansza zmieni³a siê od ostatniego ruchu
 
-	if(board.board_array[col][row].value == 0)
+	// dopóki:
+	// nie zosta³ wstawiony klocek i plansza zmieni³a siê od ostatniego ruchu
+	// albo jest pierwsza tura gry
+	// to wstaw klocek
+	while (!inserted && changed || board.first_turn)
 	{
-		random = rand() % 10 + 1;             //10% szans na wygenerowanie klocka o wartosci 2
-		if (random == 1)
-		{
-            board.board_array[col][row].value = 4;
-		}
-		else
-		{
-			board.board_array[col][row].value = 2;
-		}
-		
-	}
+		col = rand() % 4;	// losowa kolumna od 0 do 3
+		row = rand() % 4;	// losowy wiersz od 0 do 3
 
+		if(board.board_array[col][row].value == 0)	// je¿eli pole jest puste
+		{
+			random = rand() % 10 + 1;				// 10% szans na wygenerowanie klocka o wartosci 2
+
+			if (random == 1)
+				board.board_array[col][row].value = 4;
+			else
+				board.board_array[col][row].value = 2;
+
+			inserted = true;	// zakoñczenie pêtli
+			board.first_turn = false;	// po wstawieniu klocka minê³a pierwsza tura
+		}
+	}
 }
 
 // funkcja mapuj¹ca wartoœæ klocka (miêdzy node_min_interpolation a node_max_interpolation z konfiguracji)
