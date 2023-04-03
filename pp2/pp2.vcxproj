@@ -143,18 +143,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="example.c" />
-    <ClCompile Include="game_board.c" />
-    <ClCompile Include="game_data.c" />
+    <ClCompile Include="board_movement.c" />
+    <ClCompile Include="board_operations.c" />
+    <ClCompile Include="board_utils.c" />
+    <ClCompile Include="game_init.c" />
+    <ClCompile Include="game_renders.c" />
+    <ClCompile Include="game_structures.c" />
     <ClCompile Include="main.c" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="example.h" />
-    <ClInclude Include="game_board.h" />
-    <ClInclude Include="game_data.h" />
+    <ClInclude Include="board_movement.h" />
+    <ClInclude Include="board_operations.h" />
+    <ClInclude Include="board_utils.h" />
+    <ClInclude Include="game_includes.h" />
+    <ClInclude Include="game_init.h" />
+    <ClInclude Include="game_renders.h" />
+    <ClInclude Include="game_structures.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -18,13 +18,22 @@
     <ClCompile Include="main.c">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="example.c">
+    <ClCompile Include="game_structures.c">
       <Filter>Pliki zasobów</Filter>
     </ClCompile>
-    <ClCompile Include="game_data.c">
+    <ClCompile Include="game_init.c">
       <Filter>Pliki zasobów</Filter>
     </ClCompile>
-    <ClCompile Include="game_board.c">
+    <ClCompile Include="game_renders.c">
+      <Filter>Pliki zasobów</Filter>
+    </ClCompile>
+    <ClCompile Include="board_operations.c">
+      <Filter>Pliki zasobów</Filter>
+    </ClCompile>
+    <ClCompile Include="board_utils.c">
+      <Filter>Pliki zasobów</Filter>
+    </ClCompile>
+    <ClCompile Include="board_movement.c">
       <Filter>Pliki zasobów</Filter>
     </ClCompile>
   </ItemGroup>
@@ -32,13 +41,25 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="example.h">
+    <ClInclude Include="game_structures.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="game_data.h">
+    <ClInclude Include="game_includes.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="game_board.h">
+    <ClInclude Include="game_init.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="game_renders.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="board_operations.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="board_utils.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="board_movement.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>
