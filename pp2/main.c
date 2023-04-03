@@ -1,12 +1,15 @@
-﻿#include <stdio.h>
+﻿/* Pliki nagłówkowe z logiką gry */
+#include "game_structures.h"
+#include "game_init.h"
+#include "game_renders.h"
+#include "board_operations.h"
+#include "board_movement.h"
+#include "board_utils.h"
+/**/
+
+#include <stdio.h>
 #include <stdbool.h>
 #include <time.h>
-#include "game_data.h" // plik nagłówkowy z podstawowymi strukturami gry
-
-/* Pliki nagłówkowe z logiką gry */
-#include "example.h"
-#include "game_board.h"
-/**/
 
 extern struct game_window game; // definicja zewnętrznej struktury zawierającej główne zmienne okna gry
 extern struct config cfg;       // definicja zewnętrznej struktury z podstawową konfiguracją gry
@@ -90,7 +93,6 @@ bool check_err_state(code)
 
 int main()
 {
-    srand(time(NULL));
     int code = game_init(&game, cfg); // generacja kodu uruchomienia gry
 
     // jeżeli wystąpi błąd, zamknij grę i wygeneruj wiadomość z błędem
@@ -100,19 +102,19 @@ int main()
     game_init(&game, cfg);      // inicjalizacja gry
     al_start_timer(game.timer); // start licznika gry
 
-    bool running = true;        // zmienna sterująca działaniem głównej pętli gry
-    ALLEGRO_EVENT event;        // zmienna w której znajdzie się przechwycony event
+    initialize_board();                                 // inicjalizacja plansy gry
+    initialize_nodes(10, 160);                          // inicjalizacja klocków
+    initialize_points(10, 10, 430, 140, cfg.font_size); // inicjalizacja licznika punktów
 
-    /* PRZYKŁADOWE WYGENEROWANIE PLANSZY */
-    initialize_board();           // zainicjalizuj planszę gry
-    initialize_nodes(100, 100);   // zainicjuj plansze, która będzie generowana w koordynatach (100,100)
-    
     generate_random_node();     // generowanie losowego klocka
     color_nodes();              // kolorowanie klocków
     draw_board();               // rysowanie planszy z wstawionymi klockami
+    draw_points();              // rysowanie licznika
     al_flip_display();          // wyświetlanie narysowanej klatki
 
     // główna pętla gry
+    bool running = true;    // zmienna sterująca działaniem głównej pętli gry
+    ALLEGRO_EVENT event;    // zmienna w której znajdzie się przechwycony event    
     while (running)
     {
         al_wait_for_event(game.queue, &event);  // nasłuchuj eventów
@@ -122,22 +124,22 @@ int main()
                 switch (event.keyboard.keycode)
                 {
                     case ALLEGRO_KEY_UP:        // przycisk - strzałka w górę
-                        stack_up();
+                        merge_up();
                         move_up();
                         break;
 
                     case ALLEGRO_KEY_DOWN:      // przycisk - strzałka w dół
-                        stack_down();
+                        merge_down();
                         move_down();
                         break;
 
                     case ALLEGRO_KEY_LEFT:      // przycisk - strzałka w lewo
-                        stack_left();
+                        merge_left();
                         move_left();
                         break;
 
                     case ALLEGRO_KEY_RIGHT:     // przycisk - strzałka w prawo
-                        stack_right();
+                        merge_right();
                         move_right();
                         break;
                     case ALLEGRO_KEY_R:         // przycisk - r
@@ -148,14 +150,16 @@ int main()
                         break;
                 }
 
-                // debug_print_board(); <-- funkcja do debugowania
-                generate_random_node(); // generowanie losowego klocka
-                color_nodes();          // kolorowanie klocków
-                draw_board();           // rysowanie planszy
-                al_flip_display();      // wyświetlanie narysowanej klatki
-
-                if (did_game_end()) printf("KONIEC");   // komunikat o końcu gry
-
+                if (event.keyboard.keycode != ALLEGRO_KEY_ESCAPE) {
+                    clear();                // czyszczenie poprzedniej klatki
+                    generate_random_node(); // generowanie losowego klocka
+                    color_nodes();          // kolorowanie klocków
+                    draw_board();           // rysowanie planszy
+                    draw_points();          // rysowanie licznika punktów
+                    al_flip_display();      // wyświetlanie narysowanej klatki
+                    if (did_game_end())     // jeżeli gra się zakończyła
+                        puts("Koniec! Wciśnij klawisz R aby zrestartowac gre.");   // komunikat o końcu gry
+                }
                 break;
 
             case ALLEGRO_EVENT_DISPLAY_CLOSE:   // event "zamknięcie okna"
