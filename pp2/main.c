@@ -66,27 +66,27 @@ bool check_err_state(code)
             return false;
 
         case 100:
-            puts("Niepoprawna inicjalizacja gry. \n Kod bledu 100");
+            puts("Niepoprawna inicjalizacja gry. \nKod bledu 100");
             return true;
 
         case 101:
-            puts("Klawiatura nie zostala zinicjalizowana poprawnie. \n kod bledu 101");
+            puts("Klawiatura nie zostala zinicjalizowana poprawnie. \nKod bledu 101");
             return true;
 
         case 102:
-            puts("Okno nie zostalo zainicjalizowane poprawnie. \n kod bledu 102");
+            puts("Okno nie zostalo zainicjalizowane poprawnie. \nKod bledu 102");
             return true;
 
         case 103:
-            puts("Kolejka nie zostala zainicjalizowana poprawnie. \n kod bledu 103");
+            puts("Kolejka nie zostala zainicjalizowana poprawnie. \nKod bledu 103");
             return true;
 
         case 104:
-            puts("Czcionka nie zostala zainicjalizowana poprawnie. \n kod bledu 104");
+            puts("Czcionka nie zostala zainicjalizowana poprawnie. \nKod bledu 104");
             return true;
 
         case 105:
-            puts("Licznik nie zostal zainicjalizowany poprawnie. \n kod bledu 105");
+            puts("Licznik nie zostal zainicjalizowany poprawnie. \nKod bledu 105");
             return true;
     }
 }
@@ -99,7 +99,6 @@ int main()
     bool err = check_err_state(code);
     if (err) return -1;
 
-    game_init(&game, cfg);      // inicjalizacja gry
     al_start_timer(game.timer); // start licznika gry
 
     initialize_board();                                 // inicjalizacja plansy gry
