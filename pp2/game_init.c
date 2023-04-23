@@ -1,9 +1,6 @@
+#include "game_includes.h"
 #include "game_init.h"
 #include "game_structures.h"
-
-extern struct game_board board;
-extern struct config cfg;
-extern struct game_points points;
 
 // funkcja inicjuj¹ca planszê gry
 void initialize_board()

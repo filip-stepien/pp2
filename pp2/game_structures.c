@@ -1,5 +1,6 @@
 // Plik zawieraj¹cy deklaracjê struktur zdefiniowanych w game_data.h
 
+#include "game_includes.h"
 #include "game_structures.h"
 
 struct config cfg = { 

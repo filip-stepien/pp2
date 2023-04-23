@@ -1,9 +1,7 @@
+#include "game_includes.h"
 #include "board_movement.h"
 #include "game_structures.h"
 #include "board_operations.h"
-
-extern struct game_board board;
-extern struct game_points points;
 
 // funkcja przesuwaj¹ce klocki w dó³
 void move_down() {
