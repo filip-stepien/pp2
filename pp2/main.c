@@ -74,19 +74,27 @@ bool check_err_state(code)
             return true;
 
         case 102:
-            puts("Okno nie zostalo zainicjalizowane poprawnie. \nKod bledu 102");
+            puts("Dodatek prymitywnych ksztaltow nie zostal zainicjalizowany poprawnie. \nKod bledu 102");
             return true;
 
         case 103:
-            puts("Kolejka nie zostala zainicjalizowana poprawnie. \nKod bledu 103");
+            puts("Dodatek do czcionki nie zostal zainicjalizowany poprawnie. \nKod bledu 103");
             return true;
 
         case 104:
-            puts("Czcionka nie zostala zainicjalizowana poprawnie. \nKod bledu 104");
+            puts("Obraz nie zostal zainicjalizowany poprawnie. \nKod bledu 104");
             return true;
 
         case 105:
-            puts("Licznik nie zostal zainicjalizowany poprawnie. \nKod bledu 105");
+            puts("Kolejka nie zostala zainicjalizowana poprawnie. \nKod bledu 105");
+            return true;
+
+        case 106:
+            puts("Czcionka nie zostala zainicjalizowana poprawnie. \nKod bledu 106");
+            return true;
+
+        case 107:
+            puts("Licznik nie zostal zainicjalizowany poprawnie. \nKod bledu 107");
             return true;
     }
 }

@@ -26,6 +26,8 @@ struct config {
     unsigned char node_max_color_b;     // wartoœæ maksymalna gradientu (b)
 };
 
+extern struct config cfg;
+
 // struktura zawieraj¹ca g³ówne zmienne okna gry
 struct game_window {
     bool game_initialized;                      // czy gra zosta³a zainicjowana poprawnie
@@ -39,6 +41,8 @@ struct game_window {
     ALLEGRO_TIMER* timer;                       // licznik klatek gry
 };
 
+extern struct game_window game;
+
 // struktura reprezentuj¹ca klocek planszy
 struct node {
     int value;				// wartoœæ, jak¹ przechowuje klocek (2, 4, 8, 16, 32...)
@@ -49,6 +53,8 @@ struct node {
     int size;				// wielkoœæ boku klocka (px)
     ALLEGRO_COLOR color;	// kolor klocka
 };
+
+extern struct node;
 
 // struktura zawieraj¹ce zmienne planszy gry
 struct game_board {
@@ -61,6 +67,8 @@ struct game_board {
     struct node** board_array;		// plansza z klockami
 };
 
+extern struct game_board board;
+
 // struktura ze zmiennymi tabeli punktowej
 struct game_points {
     int counter;    // licznik wyniku
@@ -71,3 +79,5 @@ struct game_points {
     int bottom_x;   // koordynata X prawego dolnego rogu tabeli punktowej (px)
     int bottom_y;   // koordynata Y prawego dolnego rogu tabeli punktowej (px)
 };
+
+extern struct game_points points;
