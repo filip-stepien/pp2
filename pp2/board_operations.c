@@ -5,10 +5,6 @@
 #include <time.h>
 #include <math.h>
 
-extern struct game_board board;
-extern struct config cfg;
-extern struct game_points points;
-
 // funkcja generuj¹ca losowy klocek
 void generate_random_node()
 {

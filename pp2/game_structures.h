@@ -54,8 +54,6 @@ struct node {
     ALLEGRO_COLOR color;	// kolor klocka
 };
 
-extern struct node;
-
 // struktura zawieraj¹ce zmienne planszy gry
 struct game_board {
     int x_size;						// maksymalna iloœæ klocków na osi X 

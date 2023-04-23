@@ -1,7 +1,6 @@
+#include "game_includes.h"
 #include "game_structures.h"
 #include "board_utils.h"
-
-extern struct game_board board;
 
 // funkcja sprawdzaj¹ca czy na planszy nast¹pi³ ruch
 bool did_board_change()

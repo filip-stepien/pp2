@@ -1,15 +1,10 @@
 #define _CRT_SECURE_NO_WARNINGS
 
+#include "game_includes.h"
 #include "game_renders.h"
 #include "game_structures.h"
 
 #include <stdio.h>
-
-extern struct game_board board;
-extern struct node;
-extern struct game_window game;
-extern struct config cfg;
-extern struct game_points points;
 
 // funkcja rysuj¹ca planszê
 void draw_board()

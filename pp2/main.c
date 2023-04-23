@@ -5,14 +5,12 @@
 #include "board_operations.h"
 #include "board_movement.h"
 #include "board_utils.h"
+#include "game_includes.h"
 /**/
 
 #include <stdio.h>
 #include <stdbool.h>
 #include <time.h>
-
-extern struct game_window game; // definicja zewnętrznej struktury zawierającej główne zmienne okna gry
-extern struct config cfg;       // definicja zewnętrznej struktury z podstawową konfiguracją gry
 
 // funkcja inicjująca zmienne okna gry i źródła eventów
 int game_init(struct game_window* game, struct config cfg)
