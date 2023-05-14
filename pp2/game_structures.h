@@ -24,6 +24,7 @@ struct config {
     unsigned char node_max_color_r;     // wartoœæ maksymalna gradientu (r)
     unsigned char node_max_color_g;     // wartoœæ maksymalna gradientu (g)
     unsigned char node_max_color_b;     // wartoœæ maksymalna gradientu (b)
+    int grow_animation_duration;        // d³ugoœæ animacjki (klatki)
 };
 
 extern struct config cfg;
@@ -58,11 +59,14 @@ struct node {
 struct game_board {
     int x_size;						// maksymalna iloœæ klocków na osi X 
     int y_size;						// maksymalna iloœæ klocków na osi Y
+    int total_size;
     int node_size;					// wielkoœæ klocka (px)
     int gap;						// wielkoœæ przerwy miêdzy klockami (10px)
     bool first_turn;                // informacja, czy aktualna tura jest pierwsza
     struct node** prev_board_array; // poprzedni stan planszy
     struct node** board_array;		// plansza z klockami
+    struct node* animation_array;
+    int animation_idx;
 };
 
 extern struct game_board board;

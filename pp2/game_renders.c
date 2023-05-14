@@ -17,11 +17,12 @@ void draw_board()
 			struct node current_node = board.board_array[i][j];	// aktualnie rysowany klocek
 
 			// rysowanie klocka, wykorzystuj¹c pola wygenerowane funkcj¹ generate_board()
-			al_draw_filled_rectangle(
+			al_draw_filled_rounded_rectangle(
 				current_node.top_x,
 				current_node.top_y,
 				current_node.bottom_x,
 				current_node.bottom_y,
+				10, 10,
 				current_node.color
 			);
 

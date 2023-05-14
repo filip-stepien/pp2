@@ -1,6 +1,7 @@
 #include "board_operations.h"
 #include "game_structures.h"
 #include "board_utils.h"
+#include "board_animations.h"
 
 #include <time.h>
 #include <math.h>
@@ -33,6 +34,9 @@ void generate_random_node()
 
 			inserted = true;	// zakoñczenie pêtli
 			board.first_turn = false;	// po wstawieniu klocka minê³a pierwsza tura
+
+			color_nodes();
+			push_to_animation_array(board.board_array[col][row]);
 		}
 	}
 }
@@ -85,7 +89,7 @@ void save_board()
 	int i, j;
 	for (i = 0; i < board.y_size; i++)
 		for (j = 0; j < board.x_size; j++)
-			board.prev_board_array[i][j].value = board.board_array[i][j].value;
+			board.prev_board_array[i][j] = board.board_array[i][j];
 }
 
 // funkcja do resetu planszy

@@ -6,6 +6,7 @@
 #include "board_movement.h"
 #include "board_utils.h"
 #include "game_includes.h"
+#include "board_animations.h"
 /**/
 
 #include <stdio.h>
@@ -119,33 +120,77 @@ int main()
 
     // główna pętla gry
     bool running = true;    // zmienna sterująca działaniem głównej pętli gry
-    ALLEGRO_EVENT event;    // zmienna w której znajdzie się przechwycony event    
+    ALLEGRO_EVENT event;    // zmienna w której znajdzie się przechwycony event 
+
+    int grow_frame = 0;
+    int frame = 1;
+
+    struct node* arr = (struct node*)calloc(8, sizeof(struct node));
+
     while (running)
     {
         al_wait_for_event(game.queue, &event);  // nasłuchuj eventów
         switch (event.type)
         {
+            case ALLEGRO_EVENT_TIMER:
+                clear();
+                draw_board();
+                draw_points();
+                grow_animate_nodes(grow_frame);
+
+                for (int i = 0; i < 8; i += 2) {
+                    slide_animation_left_to_right(arr[i], arr[i + 1], frame, arr, i);
+                }
+
+                al_flip_display();
+
+                if (grow_frame == cfg.grow_animation_duration) clear_animation_array();
+                else grow_frame++;
+
+                if (frame < 100) frame++;
+
+                break;
+
             case ALLEGRO_EVENT_KEY_DOWN:        // event "przycisk wciśnięty"
                 switch (event.keyboard.keycode)
                 {
                     case ALLEGRO_KEY_UP:        // przycisk - strzałka w górę
                         merge_up();
                         move_up();
+                        color_nodes();
+                        get_nodes_to_grow_animate();
+                        memset(arr, 0, 8 * sizeof(struct node));
                         break;
 
                     case ALLEGRO_KEY_DOWN:      // przycisk - strzałka w dół
                         merge_down();
                         move_down();
+                        color_nodes();
+                        get_nodes_to_grow_animate();
+                        memset(arr, 0, 8 * sizeof(struct node));
                         break;
 
                     case ALLEGRO_KEY_LEFT:      // przycisk - strzałka w lewo
                         merge_left();
                         move_left();
+                        color_nodes();
+                        get_nodes_to_grow_animate();
+                        memset(arr, 0, 8 * sizeof(struct node));
                         break;
 
                     case ALLEGRO_KEY_RIGHT:     // przycisk - strzałka w prawo
                         merge_right();
                         move_right();
+                        color_nodes();
+                        get_nodes_to_grow_animate();
+
+                        memset(arr, 0, 8 * sizeof(struct node));
+                        get_nodes_to_slide_animate_left_to_right(arr);
+
+                        for (int i = 0; i < 8; i += 2) {
+                            printf("(%d,%d) -> (%d,%d)\n", arr[i].top_x, arr[i].top_y, arr[i + 1].top_x, arr[i + 1].top_y);
+                        }
+
                         break;
                     case ALLEGRO_KEY_R:         // przycisk - r
                         reset_board();          // zresetuj planszę
@@ -156,12 +201,11 @@ int main()
                 }
 
                 if (event.keyboard.keycode != ALLEGRO_KEY_ESCAPE) {
-                    clear();                // czyszczenie poprzedniej klatki
                     generate_random_node(); // generowanie losowego klocka
-                    color_nodes();          // kolorowanie klocków
-                    draw_board();           // rysowanie planszy
-                    draw_points();          // rysowanie licznika punktów
-                    al_flip_display();      // wyświetlanie narysowanej klatki
+
+                    grow_frame = 0;
+                    frame = 1;
+
                     if (did_game_end())     // jeżeli gra się zakończyła
                         puts("Koniec! Wciśnij klawisz R aby zrestartowac gre.");   // komunikat o końcu gry
                 }
