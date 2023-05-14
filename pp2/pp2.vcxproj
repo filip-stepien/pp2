@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="board_animations.c" />
     <ClCompile Include="board_movement.c" />
     <ClCompile Include="board_operations.c" />
     <ClCompile Include="board_utils.c" />
@@ -155,6 +156,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="board_animations.h" />
     <ClInclude Include="board_movement.h" />
     <ClInclude Include="board_operations.h" />
     <ClInclude Include="board_utils.h" />

@@ -8,9 +8,13 @@ void initialize_board()
 	// przypisanie strukturze board zmiennych ze struktury config zawieraj¹c¹ konfiguracjê gry
 	board.x_size = cfg.board_x_size;
 	board.y_size = cfg.board_y_size;
+	board.total_size = cfg.board_y_size * cfg.board_y_size;
 	board.node_size = cfg.board_node_size;
 	board.gap = cfg.board_gap;
 	board.first_turn = true;
+	board.animation_idx = 0;
+
+	board.animation_array = (struct node*)calloc(board.total_size, sizeof(struct node));
 
 	// dynamiczna alokacja pamiêci dla planszy z klockami
 	board.board_array = (struct node**)calloc(board.y_size, sizeof(struct node*));
@@ -91,6 +95,9 @@ void board_cleanup()
 
 	free(board.board_array);
 	board.board_array = NULL;	// unikniêciê "wisz¹cego wskaŸnika"
+
+	free(board.animation_array);
+	board.animation_array = NULL;
 }
 
 // funkcja inicjujaca liczninik punktów
