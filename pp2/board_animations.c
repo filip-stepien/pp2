@@ -63,7 +63,8 @@ void grow_animate_nodes(int frame) {
 	}
 }
 
-void slide_animation_left_to_right(struct node from, struct node to, int current_frame, struct node* arr, int i) {
+void slide_animation_left_to_right(struct node from, struct node to, int current_frame, struct node* arr, int i) 
+{
 	int step = current_frame * 50;
 
 	if (from.top_x + step > to.top_x) {
@@ -108,8 +109,9 @@ void slide_animation_left_to_right(struct node from, struct node to, int current
 	}
 }
 
-void slide_animation_right_to_left(struct node from, struct node to, int current_frame) {
-	int step = current_frame * 30;
+void slide_animation_right_to_left(struct node from, struct node to, int current_frame) 
+{
+	int step = current_frame * 50;
 
 	if (from.bottom_x - step < to.bottom_x) {
 		al_draw_filled_rounded_rectangle(
@@ -118,7 +120,17 @@ void slide_animation_right_to_left(struct node from, struct node to, int current
 			to.bottom_x,
 			to.bottom_y,
 			10, 10,
-			al_map_rgb(255, 0, 0)
+			to.color
+		);
+
+		al_draw_textf(
+			game.font,
+			al_map_rgb(0, 0, 0),
+			to.top_x + to.size / 2,
+			to.top_y + to.size / 2 - cfg.font_size / 2,
+			ALLEGRO_ALIGN_CENTER,
+			"%d",
+			to.value
 		);
 	}
 	else {
@@ -128,13 +140,24 @@ void slide_animation_right_to_left(struct node from, struct node to, int current
 			from.bottom_x - step,
 			from.bottom_y,
 			10, 10,
-			al_map_rgb(255, 0, 0)
+			from.color
+		);
+
+		al_draw_textf(
+			game.font,
+			al_map_rgb(0, 0, 0),
+			from.top_x - step + from.size / 2,
+			from.top_y + from.size / 2 - cfg.font_size / 2,
+			ALLEGRO_ALIGN_CENTER,
+			"%d",
+			from.value
 		);
 	}
 }
 
-void slide_animation_down_to_up(struct node from, struct node to, int current_frame) {
-	int step = current_frame * 30;
+void slide_animation_down_to_up(struct node from, struct node to, int current_frame) 
+{
+	int step = current_frame * 50;
 
 	if (from.bottom_y - step < to.bottom_y) {
 		al_draw_filled_rounded_rectangle(
@@ -143,7 +166,17 @@ void slide_animation_down_to_up(struct node from, struct node to, int current_fr
 			to.bottom_x,
 			to.bottom_y,
 			10, 10,
-			al_map_rgb(255, 0, 0)
+			to.color
+		);
+
+		al_draw_textf(
+			game.font,
+			al_map_rgb(0, 0, 0),
+			to.top_x + to.size / 2,
+			to.top_y + to.size / 2 - cfg.font_size / 2,
+			ALLEGRO_ALIGN_CENTER,
+			"%d",
+			to.value
 		);
 	}
 	else {
@@ -153,13 +186,24 @@ void slide_animation_down_to_up(struct node from, struct node to, int current_fr
 			from.bottom_x,
 			from.bottom_y - step,
 			10, 10,
-			al_map_rgb(255, 0, 0)
+			from.color
+		);
+
+		al_draw_textf(
+			game.font,
+			al_map_rgb(0, 0, 0),
+			from.top_x + from.size / 2,
+			from.top_y - step + from.size / 2 - cfg.font_size / 2,
+			ALLEGRO_ALIGN_CENTER,
+			"%d",
+			from.value
 		);
 	}
 }
 
-void slide_animation_up_to_down(struct node from, struct node to, int current_frame) {
-	int step = current_frame * 30;
+void slide_animation_up_to_down(struct node from, struct node to, int current_frame) 
+{
+	int step = current_frame * 50;
 
 	if (from.top_y + step > to.top_y) {
 		al_draw_filled_rounded_rectangle(
@@ -168,7 +212,17 @@ void slide_animation_up_to_down(struct node from, struct node to, int current_fr
 			to.bottom_x,
 			to.bottom_y,
 			10, 10,
-			al_map_rgb(255, 0, 0)
+			to.color
+		);
+
+		al_draw_textf(
+			game.font,
+			al_map_rgb(0, 0, 0),
+			to.top_x + to.size / 2,
+			to.top_y + to.size / 2 - cfg.font_size / 2,
+			ALLEGRO_ALIGN_CENTER,
+			"%d",
+			to.value
 		);
 	}
 	else {
@@ -178,16 +232,33 @@ void slide_animation_up_to_down(struct node from, struct node to, int current_fr
 			from.bottom_x,
 			from.bottom_y + step,
 			10, 10,
-			al_map_rgb(255, 0, 0)
+			from.color
+		);
+
+		al_draw_textf(
+			game.font,
+			al_map_rgb(0, 0, 0),
+			from.top_x + from.size / 2,
+			from.top_y + step + from.size / 2 - cfg.font_size / 2,
+			ALLEGRO_ALIGN_CENTER,
+			"%d",
+			from.value
 		);
 	}
 }
 
-void get_nodes_to_slide_animate_left_to_right(struct node* arr) {
+void get_nodes_to_slide_animate_left_to_right(struct node* arr) 
+{
 	int idx = 0;
 
 	for (int i = 0; i < board.y_size; i++) 
 	{
+		int m;
+		for (m = 0; m < board.x_size; m++) {
+			if (board.board_array[i][m].value != board.prev_board_array[i][m].value) break;
+		}
+		if (m == board.x_size) continue;
+
 		struct node current_node = { 0 };
 		for (int j = 0; j < board.x_size; j++) 
 		{
@@ -196,7 +267,40 @@ void get_nodes_to_slide_animate_left_to_right(struct node* arr) {
 				current_node = board.prev_board_array[i][j];
 				for (int k = j; k < board.x_size; k++)
 				{
-					if (current_node.top_x != board.board_array[i][k].top_x && board.board_array[i][k].value != 0 && current_node.value == board.prev_board_array[i][k].value)
+					if (current_node.top_x != board.board_array[i][k].top_x && board.board_array[i][k].value != 0)
+					{
+						arr[idx] = current_node;
+						arr[idx + 1] = board.board_array[i][k];
+						idx += 2;
+						break;
+					}
+				}
+			}
+		}
+	}
+}
+
+void get_nodes_to_slide_animate_right_to_left(struct node* arr) 
+{
+	int idx = 0;
+
+	for (int i = 0; i < board.y_size; i++)
+	{
+		int m;
+		for (m = 0; m < board.x_size; m++) {
+			if (board.board_array[i][m].value != board.prev_board_array[i][m].value) break;
+		}
+		if (m == board.x_size) continue;
+
+		struct node current_node = { 0 };
+		for (int j = board.x_size-1; j >= 0; j--)
+		{
+			if (board.prev_board_array[i][j].value != 0)
+			{
+				current_node = board.prev_board_array[i][j];
+				for (int k = j; k >= 0; k--)
+				{
+					if (current_node.top_x != board.board_array[i][k].top_x && board.board_array[i][k].value != 0)
 					{
 						arr[idx] = current_node;
 						arr[idx + 1] = board.board_array[i][k];
