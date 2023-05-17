@@ -125,7 +125,7 @@ int main()
     int grow_frame = 0;
     int frame = 1;
 
-    struct node* arr = (struct node*)calloc(8, sizeof(struct node));
+    struct node* arr = (struct node*)calloc(16, sizeof(struct node));
 
     while (running)
     {
@@ -139,7 +139,7 @@ int main()
                 grow_animate_nodes(grow_frame);
 
                 for (int i = 0; i < 8; i += 2) {
-                    slide_animation_left_to_right(arr[i], arr[i + 1], frame, arr, i);
+                    slide_animation_right_to_left(arr[i], arr[i + 1], frame, arr, i);
                 }
 
                 al_flip_display();
@@ -175,7 +175,10 @@ int main()
                         move_left();
                         color_nodes();
                         get_nodes_to_grow_animate();
+
                         memset(arr, 0, 8 * sizeof(struct node));
+                        get_nodes_to_slide_animate_right_to_left(arr);
+
                         break;
 
                     case ALLEGRO_KEY_RIGHT:     // przycisk - strzałka w prawo
@@ -187,9 +190,9 @@ int main()
                         memset(arr, 0, 8 * sizeof(struct node));
                         get_nodes_to_slide_animate_left_to_right(arr);
 
-                        for (int i = 0; i < 8; i += 2) {
-                            printf("(%d,%d) -> (%d,%d)\n", arr[i].top_x, arr[i].top_y, arr[i + 1].top_x, arr[i + 1].top_y);
-                        }
+                        //for (int i = 0; i < 8; i += 2) {
+                        //    printf("(%d,%d) -> (%d,%d)\n", arr[i].top_x, arr[i].top_y, arr[i + 1].top_x, arr[i + 1].top_y);
+                        //}
 
                         break;
                     case ALLEGRO_KEY_R:         // przycisk - r
