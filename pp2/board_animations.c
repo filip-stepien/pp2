@@ -46,15 +46,6 @@ void grow_animation(struct node current_node, int current_frame)
 	}
 }
 
-void get_nodes_to_grow_animate() {
-	for (int i = 0; i < board.y_size; i++) {
-		for (int j = 0; j < board.x_size; j++) {
-			if (board.board_array[i][j].value != board.prev_board_array[i][j].value && board.prev_board_array[i][j].value != 0 && board.board_array[i][j].value != 0)
-				push_to_animation_array(board.board_array[i][j]);
-		}
-	}
-}
-
 void grow_animate_nodes(int frame) {
 	for (int i = 0; i < board.total_size; i++) {
 		if (board.animation_array[i].top_x != 0 && board.animation_array[i].top_y != 0) {
@@ -63,11 +54,17 @@ void grow_animate_nodes(int frame) {
 	}
 }
 
-void slide_animation_left_to_right(struct node from, struct node to, int current_frame) 
+void slide_animation_left_to_right(struct node from, struct node to, int current_frame, char* slide_queue)
 {
 	int step = current_frame * 50;
 
-	if (from.top_x + step > to.top_x) {
+	if (from.top_x + step == to.top_x)
+	{
+		*slide_queue = 1;
+	}
+
+	if (from.top_x + step >= to.top_x) 
+	{
 		al_draw_filled_rounded_rectangle(
 			to.top_x,
 			to.top_y,
@@ -109,11 +106,17 @@ void slide_animation_left_to_right(struct node from, struct node to, int current
 	}
 }
 
-void slide_animation_right_to_left(struct node from, struct node to, int current_frame) 
+void slide_animation_right_to_left(struct node from, struct node to, int current_frame, char* slide_queue)
 {
 	int step = current_frame * 50;
 
-	if (from.bottom_x - step < to.bottom_x) {
+	if (from.bottom_x - step == to.bottom_x)
+	{
+		*slide_queue = 1;
+	}
+
+	if (from.bottom_x - step <= to.bottom_x) 
+	{
 		al_draw_filled_rounded_rectangle(
 			to.top_x,
 			to.top_y,
@@ -153,13 +156,23 @@ void slide_animation_right_to_left(struct node from, struct node to, int current
 			from.value
 		);
 	}
+
+	if (from.bottom_x - step == to.bottom_x)
+	{
+		*slide_queue = 1;
+	}
 }
 
-void slide_animation_down_to_up(struct node from, struct node to, int current_frame) 
+void slide_animation_down_to_up(struct node from, struct node to, int current_frame, char* slide_queue)
 {
 	int step = current_frame * 50;
 
-	if (from.bottom_y - step < to.bottom_y) {
+	if (from.bottom_y - step == to.bottom_y)
+	{
+		*slide_queue = 1;
+	}
+
+	if (from.bottom_y - step <= to.bottom_y) {
 		al_draw_filled_rounded_rectangle(
 			to.top_x,
 			to.top_y,
@@ -201,11 +214,17 @@ void slide_animation_down_to_up(struct node from, struct node to, int current_fr
 	}
 }
 
-void slide_animation_up_to_down(struct node from, struct node to, int current_frame) 
+void slide_animation_up_to_down(struct node from, struct node to, int current_frame, char* slide_queue)
 {
 	int step = current_frame * 50;
 
-	if (from.top_y + step > to.top_y) {
+	if (from.top_y + step == to.top_y)
+	{
+		*slide_queue = 1;
+	}
+
+	if (from.top_y + step >= to.top_y) 
+	{
 		al_draw_filled_rounded_rectangle(
 			to.top_x,
 			to.top_y,
@@ -253,19 +272,13 @@ void get_nodes_to_slide_animate_left_to_right(struct node* arr)
 
 	for (int i = 0; i < board.y_size; i++) 
 	{
-		int m;
-		for (m = 0; m < board.x_size; m++) {
-			if (board.board_array[i][m].value != board.prev_board_array[i][m].value) break;
-		}
-		if (m == board.x_size) continue;
-
 		struct node current_node = { 0 };
 		for (int j = 0; j < board.x_size; j++) 
 		{
-			if (board.prev_board_array[i][j].value != 0)
+			if (board.prev_board_array[i][j].value != 0 && board.board_array[i][j].value == 0)
 			{
 				current_node = board.prev_board_array[i][j];
-				for (int k = j; k < board.x_size; k++)
+				for (int k = j + 1; k < board.x_size; k++)
 				{
 					if (current_node.top_x != board.board_array[i][k].top_x && board.board_array[i][k].value != 0)
 					{
@@ -286,16 +299,10 @@ void get_nodes_to_slide_animate_right_to_left(struct node* arr)
 
 	for (int i = 0; i < board.y_size; i++)
 	{
-		int m;
-		for (m = 0; m < board.x_size; m++) {
-			if (board.board_array[i][m].value != board.prev_board_array[i][m].value) break;
-		}
-		if (m == board.x_size) continue;
-
 		struct node current_node = { 0 };
 		for (int j = board.x_size-1; j >= 0; j--)
 		{
-			if (board.prev_board_array[i][j].value != 0)
+			if (board.prev_board_array[i][j].value != 0 && board.board_array[i][j].value == 0)
 			{
 				current_node = board.prev_board_array[i][j];
 				for (int k = j; k >= 0; k--)
@@ -319,16 +326,10 @@ void get_nodes_to_slide_animate_up_to_down(struct node* arr)
 
 	for (int i = 0; i < board.x_size; i++)
 	{
-		int m;
-		for (m = 0; m < board.y_size; m++) {
-			if (board.board_array[m][i].value != board.prev_board_array[m][i].value) break;
-		}
-		if (m == board.y_size) continue;
-
 		struct node current_node = { 0 };
 		for (int j = 0; j < board.y_size; j++)
 		{
-			if (board.prev_board_array[j][i].value != 0)
+			if (board.prev_board_array[j][i].value != 0 && board.board_array[j][i].value == 0)
 			{
 				current_node = board.prev_board_array[j][i];
 				for (int k = j; k < board.y_size; k++)
@@ -352,16 +353,10 @@ void get_nodes_to_slide_animate_down_to_up(struct node* arr)
 
 	for (int i = 0; i < board.x_size; i++)
 	{
-		int m;
-		for (m = 0; m < board.y_size; m++) {
-			if (board.board_array[m][i].value != board.prev_board_array[m][i].value) break;
-		}
-		if (m == board.y_size) continue;
-
 		struct node current_node = { 0 };
 		for (int j = board.x_size - 1; j >= 0; j--)
 		{
-			if (board.prev_board_array[j][i].value != 0)
+			if (board.prev_board_array[j][i].value != 0 && board.board_array[j][i].value == 0)
 			{
 				current_node = board.prev_board_array[j][i];
 				for (int k = j; k >= 0; k--)

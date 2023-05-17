@@ -17,7 +17,7 @@ struct config cfg = {
 	2048,			// maksymalna wartoœæ dla której obliczany jest gradient koloru
 	250, 250, 0,	// wartoœæ minimalna gradientu (r, g, b)
 	255, 0 , 120,	// wartoœæ maksymalna gradientu (r, g, b)
-	8,
+	10,
 };
 
 struct game_window game;

@@ -13,12 +13,6 @@
 #include <stdbool.h>
 #include <time.h>
 
-#define SLIDE_LEFT 255
-#define SLIDE_RIGHT 255<<8;
-#define SLIDE_UP 255<<16;
-#define SLIDE_DOWN 255<<24;
-#define ALL_SLIDED 2147483647;
-
 // funkcja inicjująca zmienne okna gry i źródła eventów
 int game_init(struct game_window* game, struct config cfg)
 {
@@ -134,15 +128,9 @@ int main()
     enum LAST_MOVE { NONE, UP, DOWN, LEFT, RIGHT};
     enum LAST_MOVE last_move = NONE;
 
-    union slide {
-        char left;
-        char right;
-        char up;
-        char down;
-        int all;
-    };
-
     struct node* arr = (struct node*)calloc(16, sizeof(struct node));
+
+    char slide_queue = 0;
 
     while (running)
     {
@@ -153,25 +141,32 @@ int main()
                 clear();
                 draw_board();
                 draw_points();
-                grow_animate_nodes(grow_frame);
 
-                for (int i = 0; i < 16; i += 2) {
+                for (int i = 0; i < 16; i += 2) 
+                {
+                    if (slide_queue == 0 && arr[i].value == arr[i + 1].value)
+                    {
+                        al_draw_filled_rounded_rectangle(arr[i + 1].top_x, arr[i + 1].top_y, arr[i + 1].bottom_x, arr[i + 1].bottom_y, 10, 10, al_map_rgb(255, 255, 255));
+                    }
+                    
                     switch (last_move)
                     {
                         case LEFT:
-                            slide_animation_right_to_left(arr[i], arr[i + 1], frame);
+                            slide_animation_right_to_left(arr[i], arr[i + 1], frame, &slide_queue);
                             break;
                         case RIGHT:
-                            slide_animation_left_to_right(arr[i], arr[i + 1], frame);
+                            slide_animation_left_to_right(arr[i], arr[i + 1], frame, &slide_queue);
                             break;
                         case UP:
-                            slide_animation_down_to_up(arr[i], arr[i + 1], frame);
+                            slide_animation_down_to_up(arr[i], arr[i + 1], frame, &slide_queue);
                             break;
                         case DOWN:
-                            slide_animation_up_to_down(arr[i], arr[i + 1], frame);
+                            slide_animation_up_to_down(arr[i], arr[i + 1], frame, &slide_queue);
                             break;
                     }
                 }
+
+                grow_animate_nodes(grow_frame);
 
                 al_flip_display();
 
@@ -189,12 +184,15 @@ int main()
                         merge_up();
                         move_up();
                         color_nodes();
-                        get_nodes_to_grow_animate();
+
+                        slide_queue = 0;
 
                         memset(arr, 0, 16 * sizeof(struct node));
                         get_nodes_to_slide_animate_down_to_up(arr);
 
                         last_move = UP;
+
+
 
                         break;
 
@@ -202,7 +200,8 @@ int main()
                         merge_down();
                         move_down();
                         color_nodes();
-                        get_nodes_to_grow_animate();
+
+                        slide_queue = 0;
 
                         memset(arr, 0, 16 * sizeof(struct node));
                         get_nodes_to_slide_animate_up_to_down(arr);
@@ -215,7 +214,8 @@ int main()
                         merge_left();
                         move_left();
                         color_nodes();
-                        get_nodes_to_grow_animate();
+
+                        slide_queue = 0;
 
                         memset(arr, 0, 16 * sizeof(struct node));
                         get_nodes_to_slide_animate_right_to_left(arr);
@@ -228,7 +228,8 @@ int main()
                         merge_right();
                         move_right();
                         color_nodes();
-                        get_nodes_to_grow_animate();
+
+                        slide_queue = 0;
 
                         memset(arr, 0, 16 * sizeof(struct node));
                         get_nodes_to_slide_animate_left_to_right(arr);
