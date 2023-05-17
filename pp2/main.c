@@ -13,6 +13,12 @@
 #include <stdbool.h>
 #include <time.h>
 
+#define SLIDE_LEFT 255
+#define SLIDE_RIGHT 255<<8;
+#define SLIDE_UP 255<<16;
+#define SLIDE_DOWN 255<<24;
+#define ALL_SLIDED 2147483647;
+
 // funkcja inicjująca zmienne okna gry i źródła eventów
 int game_init(struct game_window* game, struct config cfg)
 {
@@ -125,6 +131,17 @@ int main()
     int grow_frame = 0;
     int frame = 1;
 
+    enum LAST_MOVE { NONE, UP, DOWN, LEFT, RIGHT};
+    enum LAST_MOVE last_move = NONE;
+
+    union slide {
+        char left;
+        char right;
+        char up;
+        char down;
+        int all;
+    };
+
     struct node* arr = (struct node*)calloc(16, sizeof(struct node));
 
     while (running)
@@ -138,8 +155,22 @@ int main()
                 draw_points();
                 grow_animate_nodes(grow_frame);
 
-                for (int i = 0; i < 8; i += 2) {
-                    slide_animation_right_to_left(arr[i], arr[i + 1], frame, arr, i);
+                for (int i = 0; i < 16; i += 2) {
+                    switch (last_move)
+                    {
+                        case LEFT:
+                            slide_animation_right_to_left(arr[i], arr[i + 1], frame);
+                            break;
+                        case RIGHT:
+                            slide_animation_left_to_right(arr[i], arr[i + 1], frame);
+                            break;
+                        case UP:
+                            slide_animation_down_to_up(arr[i], arr[i + 1], frame);
+                            break;
+                        case DOWN:
+                            slide_animation_up_to_down(arr[i], arr[i + 1], frame);
+                            break;
+                    }
                 }
 
                 al_flip_display();
@@ -159,7 +190,12 @@ int main()
                         move_up();
                         color_nodes();
                         get_nodes_to_grow_animate();
-                        memset(arr, 0, 8 * sizeof(struct node));
+
+                        memset(arr, 0, 16 * sizeof(struct node));
+                        get_nodes_to_slide_animate_down_to_up(arr);
+
+                        last_move = UP;
+
                         break;
 
                     case ALLEGRO_KEY_DOWN:      // przycisk - strzałka w dół
@@ -167,7 +203,12 @@ int main()
                         move_down();
                         color_nodes();
                         get_nodes_to_grow_animate();
-                        memset(arr, 0, 8 * sizeof(struct node));
+
+                        memset(arr, 0, 16 * sizeof(struct node));
+                        get_nodes_to_slide_animate_up_to_down(arr);
+
+                        last_move = DOWN;
+
                         break;
 
                     case ALLEGRO_KEY_LEFT:      // przycisk - strzałka w lewo
@@ -176,8 +217,10 @@ int main()
                         color_nodes();
                         get_nodes_to_grow_animate();
 
-                        memset(arr, 0, 8 * sizeof(struct node));
+                        memset(arr, 0, 16 * sizeof(struct node));
                         get_nodes_to_slide_animate_right_to_left(arr);
+
+                        last_move = LEFT;
 
                         break;
 
@@ -187,12 +230,14 @@ int main()
                         color_nodes();
                         get_nodes_to_grow_animate();
 
-                        memset(arr, 0, 8 * sizeof(struct node));
+                        memset(arr, 0, 16 * sizeof(struct node));
                         get_nodes_to_slide_animate_left_to_right(arr);
 
                         //for (int i = 0; i < 8; i += 2) {
                         //    printf("(%d,%d) -> (%d,%d)\n", arr[i].top_x, arr[i].top_y, arr[i + 1].top_x, arr[i + 1].top_y);
                         //}
+
+                        last_move = RIGHT;
 
                         break;
                     case ALLEGRO_KEY_R:         // przycisk - r
