@@ -63,7 +63,7 @@ void grow_animate_nodes(int frame) {
 	}
 }
 
-void slide_animation_left_to_right(struct node from, struct node to, int current_frame, struct node* arr, int i) 
+void slide_animation_left_to_right(struct node from, struct node to, int current_frame) 
 {
 	int step = current_frame * 50;
 
@@ -304,6 +304,72 @@ void get_nodes_to_slide_animate_right_to_left(struct node* arr)
 					{
 						arr[idx] = current_node;
 						arr[idx + 1] = board.board_array[i][k];
+						idx += 2;
+						break;
+					}
+				}
+			}
+		}
+	}
+}
+
+void get_nodes_to_slide_animate_up_to_down(struct node* arr)
+{
+	int idx = 0;
+
+	for (int i = 0; i < board.x_size; i++)
+	{
+		int m;
+		for (m = 0; m < board.y_size; m++) {
+			if (board.board_array[m][i].value != board.prev_board_array[m][i].value) break;
+		}
+		if (m == board.y_size) continue;
+
+		struct node current_node = { 0 };
+		for (int j = 0; j < board.y_size; j++)
+		{
+			if (board.prev_board_array[j][i].value != 0)
+			{
+				current_node = board.prev_board_array[j][i];
+				for (int k = j; k < board.y_size; k++)
+				{
+					if (current_node.top_y != board.board_array[k][i].top_y && board.board_array[k][i].value != 0)
+					{
+						arr[idx] = current_node;
+						arr[idx + 1] = board.board_array[k][i];
+						idx += 2;
+						break;
+					}
+				}
+			}
+		}
+	}
+}
+
+void get_nodes_to_slide_animate_down_to_up(struct node* arr)
+{
+	int idx = 0;
+
+	for (int i = 0; i < board.x_size; i++)
+	{
+		int m;
+		for (m = 0; m < board.y_size; m++) {
+			if (board.board_array[m][i].value != board.prev_board_array[m][i].value) break;
+		}
+		if (m == board.y_size) continue;
+
+		struct node current_node = { 0 };
+		for (int j = board.x_size - 1; j >= 0; j--)
+		{
+			if (board.prev_board_array[j][i].value != 0)
+			{
+				current_node = board.prev_board_array[j][i];
+				for (int k = j; k >= 0; k--)
+				{
+					if (current_node.top_y != board.board_array[k][i].top_y && board.board_array[k][i].value != 0)
+					{
+						arr[idx] = current_node;
+						arr[idx + 1] = board.board_array[k][i];
 						idx += 2;
 						break;
 					}
