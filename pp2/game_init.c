@@ -15,6 +15,7 @@ void initialize_board()
 
 	animations.grow_animation_array = (struct node*)calloc(board.total_size, sizeof(struct node));
 	animations.slide_animation_array = (struct node*)calloc(board.total_size, sizeof(struct node));
+	animations.done_sliding = true;
 
 	// dynamiczna alokacja pamiêci dla planszy z klockami
 	board.board_array = (struct node**)calloc(board.y_size, sizeof(struct node*));

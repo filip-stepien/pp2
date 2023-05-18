@@ -31,7 +31,7 @@ void draw_board()
 				// rysowanie wartoœci wewn¹trz klocka
 				al_draw_textf(
 					game.font,
-					al_map_rgb(0, 0, 0),
+					al_map_rgb(cfg.node_text_color_r, cfg.node_text_color_g, cfg.node_text_color_b),
 					current_node.top_x + current_node.size / 2,						// po³owa klocka na osi X = górne x + po³owa d³ugoœci boku
 					current_node.top_y + current_node.size / 2 - cfg.font_size / 2,	// po³owa klocka na osi Y = y + po³owa d³ugoœci boku, dalsza czêœæ - patrz ni¿ej
 					ALLEGRO_ALIGN_CENTER,	// wycentrowanie tekstu przez allegro, ale tylko w osi X, w osi Y nale¿y odj¹æ od y po³owê wielkoœci czcionki
@@ -57,19 +57,19 @@ void draw_points()
 		game.font = al_load_font("Arial.ttf", font_size--, NULL);		// zmniejszaj rozmiar czcionki
 
 	// rysowanie licznika
-	al_draw_rectangle(
+	al_draw_filled_rounded_rectangle(
 		points.top_x,
 		points.top_y,
 		points.bottom_x,
 		points.bottom_y,
-		al_map_rgb(255, 255, 255),
-		1
+		10, 10,
+		al_map_rgb(cfg.points_bg_color_r, cfg.points_bg_color_g, cfg.points_bg_color_b)
 	);
 
 	// rysowanie punktów
 	al_draw_text(
 		game.font, 
-		al_map_rgb(255, 255, 255), 
+		al_map_rgb(cfg.points_text_color_r, cfg.points_text_color_g, cfg.points_text_color_b),
 		points.top_x + points.width / 2,
 		points.top_y + points.height / 2 - cfg.font_size / 2,
 		ALLEGRO_ALIGN_CENTER,

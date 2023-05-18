@@ -116,6 +116,7 @@ int main()
     initialize_nodes(10, 160);                          // inicjalizacja klocków
     initialize_points(10, 10, 430, 140, cfg.font_size); // inicjalizacja licznika punktów
 
+    srand(time(NULL));
     generate_random_node();     // generowanie losowego klocka
     color_nodes();              // kolorowanie klocków
     draw_board();               // rysowanie planszy z wstawionymi klockami
@@ -141,14 +142,18 @@ int main()
                 al_flip_display();
 
                 if (frame == cfg.grow_animation_duration) clear_grow_animation_array();
+
+                if(frame == cfg.move_cooldown) animations.on_cooldown = false;
+
                 frame++;
                 break;
 
             case ALLEGRO_EVENT_KEY_DOWN:        // event "przycisk wciśnięty"
+                if (animations.on_cooldown) break;
+
                 switch (event.keyboard.keycode)
                 {
                     case ALLEGRO_KEY_UP:        // przycisk - strzałka w górę
-                        animations.done_sliding = false;
                         animations.last_move = UP;
 
                         merge_up();
@@ -159,7 +164,6 @@ int main()
                         break;
 
                     case ALLEGRO_KEY_DOWN:      // przycisk - strzałka w dół
-                        animations.done_sliding = false;
                         animations.last_move = DOWN;
 
                         merge_down();
@@ -170,7 +174,6 @@ int main()
                         break;
 
                     case ALLEGRO_KEY_LEFT:      // przycisk - strzałka w lewo
-                        animations.done_sliding = false;
                         animations.last_move = LEFT;
 
                         merge_left();
@@ -181,7 +184,6 @@ int main()
                         break;
 
                     case ALLEGRO_KEY_RIGHT:     // przycisk - strzałka w prawo
-                        animations.done_sliding = false;
                         animations.last_move = RIGHT;
 
                         merge_right();
@@ -203,9 +205,14 @@ int main()
                         break;
                 }
 
-                if (event.keyboard.keycode != ALLEGRO_KEY_ESCAPE) {
+                if (event.keyboard.keycode == ALLEGRO_KEY_RIGHT || 
+                    event.keyboard.keycode == ALLEGRO_KEY_LEFT ||
+                    event.keyboard.keycode == ALLEGRO_KEY_UP ||
+                    event.keyboard.keycode == ALLEGRO_KEY_DOWN) {
                     generate_random_node(); // generowanie losowego klocka
                     frame = 0;
+                    animations.done_sliding = false;
+                    animations.on_cooldown = true;
 
                     if (did_game_end())     // jeżeli gra się zakończyła
                         puts("Koniec! Wciśnij klawisz R aby zrestartowac gre.");   // komunikat o końcu gry

@@ -5,25 +5,25 @@
 
 #include <time.h>
 #include <math.h>
+#include <stdio.h>
 
 // funkcja generuj¹ca losowy klocek
 void generate_random_node()
 {
-	int col, row;
+	int col = -1, row = -1;
 	int random;
 	bool inserted = false;	// zmienna steruj¹ca pêtl¹ od generowania klocka
 	bool changed = did_board_change();	// sprawdzenie, czy plansza zmieni³a siê od ostatniego ruchu
-
-	srand(time(NULL));
 
 	// dopóki:
 	// nie zosta³ wstawiony klocek i plansza zmieni³a siê od ostatniego ruchu
 	// albo jest pierwsza tura gry
 	// to wstaw klocek
+
 	while (!inserted && changed || board.first_turn)
 	{
-		col = rand() % 4;	// losowa kolumna od 0 do 3
-		row = rand() % 4;	// losowy wiersz od 0 do 3
+		col = rand() % board.y_size;	// losowa kolumna
+		row = rand() % board.x_size;	// losowy wiersz
 
 		if (board.board_array[col][row].value == 0)	// je¿eli pole jest puste
 		{
