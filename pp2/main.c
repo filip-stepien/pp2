@@ -24,7 +24,7 @@ int game_init(struct game_window* game, struct config cfg)
     game->ttf_addon_initialized = al_init_ttf_addon();
     game->display = al_create_display(cfg.width, cfg.height);
     game->queue = al_create_event_queue();
-    game->font = al_load_font("Arial.ttf", cfg.font_size, NULL);
+    game->font = al_load_font("Arial.ttf", cfg.font_size, 0);
     game->timer = al_create_timer(1.0 / (double)cfg.fps); // klatka co 1/30 sekundy = 30 klatek na sekundę
 
     // generacja kodów błędów, jeżeli któraś zmienna nie została zainicjowana poprawnie
@@ -95,6 +95,10 @@ bool check_err_state(code)
         case 107:
             puts("Licznik nie zostal zainicjalizowany poprawnie. \nKod bledu 107");
             return true;
+
+        default:
+            puts("Wystapil niezidentyfikowany blad.");
+            return true;
     }
 }
 
@@ -122,16 +126,7 @@ int main()
     bool running = true;    // zmienna sterująca działaniem głównej pętli gry
     ALLEGRO_EVENT event;    // zmienna w której znajdzie się przechwycony event 
 
-    int grow_frame = 0;
-    int frame = 1;
-
-    enum LAST_MOVE { NONE, UP, DOWN, LEFT, RIGHT};
-    enum LAST_MOVE last_move = NONE;
-
-    struct node* arr = (struct node*)calloc(16, sizeof(struct node));
-
-    char slide_queue = 0;
-
+    int frame = 0;
     while (running)
     {
         al_wait_for_event(game.queue, &event);  // nasłuchuj eventów
@@ -141,109 +136,68 @@ int main()
                 clear();
                 draw_board();
                 draw_points();
-
-                for (int i = 0; i < 16; i += 2) 
-                {
-                    if (slide_queue == 0 && arr[i].value == arr[i + 1].value)
-                    {
-                        al_draw_filled_rounded_rectangle(arr[i + 1].top_x, arr[i + 1].top_y, arr[i + 1].bottom_x, arr[i + 1].bottom_y, 10, 10, al_map_rgb(255, 255, 255));
-                    }
-                    
-                    switch (last_move)
-                    {
-                        case LEFT:
-                            slide_animation_right_to_left(arr[i], arr[i + 1], frame, &slide_queue);
-                            break;
-                        case RIGHT:
-                            slide_animation_left_to_right(arr[i], arr[i + 1], frame, &slide_queue);
-                            break;
-                        case UP:
-                            slide_animation_down_to_up(arr[i], arr[i + 1], frame, &slide_queue);
-                            break;
-                        case DOWN:
-                            slide_animation_up_to_down(arr[i], arr[i + 1], frame, &slide_queue);
-                            break;
-                    }
-                }
-
-                grow_animate_nodes(grow_frame);
-
+                slide_animate_nodes(frame);
+                grow_animate_nodes(frame);
                 al_flip_display();
 
-                if (grow_frame == cfg.grow_animation_duration) clear_animation_array();
-                else grow_frame++;
-
-                if (frame < 100) frame++;
-
+                if (frame == cfg.grow_animation_duration) clear_grow_animation_array();
+                frame++;
                 break;
 
             case ALLEGRO_EVENT_KEY_DOWN:        // event "przycisk wciśnięty"
                 switch (event.keyboard.keycode)
                 {
                     case ALLEGRO_KEY_UP:        // przycisk - strzałka w górę
+                        animations.done_sliding = false;
+                        animations.last_move = UP;
+
                         merge_up();
                         move_up();
                         color_nodes();
-
-                        slide_queue = 0;
-
-                        memset(arr, 0, 16 * sizeof(struct node));
-                        get_nodes_to_slide_animate_down_to_up(arr);
-
-                        last_move = UP;
-
-
-
+                        clear_slide_animation_array();
+                        get_nodes_to_slide_animate_down_to_up();
                         break;
 
                     case ALLEGRO_KEY_DOWN:      // przycisk - strzałka w dół
+                        animations.done_sliding = false;
+                        animations.last_move = DOWN;
+
                         merge_down();
                         move_down();
                         color_nodes();
-
-                        slide_queue = 0;
-
-                        memset(arr, 0, 16 * sizeof(struct node));
-                        get_nodes_to_slide_animate_up_to_down(arr);
-
-                        last_move = DOWN;
-
+                        clear_slide_animation_array();
+                        get_nodes_to_slide_animate_up_to_down();
                         break;
 
                     case ALLEGRO_KEY_LEFT:      // przycisk - strzałka w lewo
+                        animations.done_sliding = false;
+                        animations.last_move = LEFT;
+
                         merge_left();
                         move_left();
                         color_nodes();
-
-                        slide_queue = 0;
-
-                        memset(arr, 0, 16 * sizeof(struct node));
-                        get_nodes_to_slide_animate_right_to_left(arr);
-
-                        last_move = LEFT;
-
+                        clear_slide_animation_array();
+                        get_nodes_to_slide_animate_right_to_left();
                         break;
 
                     case ALLEGRO_KEY_RIGHT:     // przycisk - strzałka w prawo
+                        animations.done_sliding = false;
+                        animations.last_move = RIGHT;
+
                         merge_right();
                         move_right();
                         color_nodes();
-
-                        slide_queue = 0;
-
-                        memset(arr, 0, 16 * sizeof(struct node));
-                        get_nodes_to_slide_animate_left_to_right(arr);
-
-                        //for (int i = 0; i < 8; i += 2) {
-                        //    printf("(%d,%d) -> (%d,%d)\n", arr[i].top_x, arr[i].top_y, arr[i + 1].top_x, arr[i + 1].top_y);
-                        //}
-
-                        last_move = RIGHT;
-
+                        clear_slide_animation_array();
+                        get_nodes_to_slide_animate_left_to_right();
                         break;
+
                     case ALLEGRO_KEY_R:         // przycisk - r
                         reset_board();          // zresetuj planszę
+                        clear_slide_animation_array();
+                        clear_grow_animation_array();
+
                         break;
+
                     case ALLEGRO_KEY_ESCAPE:    // przycisk - esc
                         running = false;        // przerwanie pętli
                         break;
@@ -251,9 +205,7 @@ int main()
 
                 if (event.keyboard.keycode != ALLEGRO_KEY_ESCAPE) {
                     generate_random_node(); // generowanie losowego klocka
-
-                    grow_frame = 0;
-                    frame = 1;
+                    frame = 0;
 
                     if (did_game_end())     // jeżeli gra się zakończyła
                         puts("Koniec! Wciśnij klawisz R aby zrestartowac gre.");   // komunikat o końcu gry

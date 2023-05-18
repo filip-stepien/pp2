@@ -18,8 +18,10 @@ struct config cfg = {
 	250, 250, 0,	// wartoœæ minimalna gradientu (r, g, b)
 	255, 0 , 120,	// wartoœæ maksymalna gradientu (r, g, b)
 	10,
+	50
 };
 
 struct game_window game;
 struct game_board board;
 struct game_points points;
+struct game_animations animations;

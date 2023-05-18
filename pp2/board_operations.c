@@ -14,6 +14,8 @@ void generate_random_node()
 	bool inserted = false;	// zmienna steruj¹ca pêtl¹ od generowania klocka
 	bool changed = did_board_change();	// sprawdzenie, czy plansza zmieni³a siê od ostatniego ruchu
 
+	srand(time(NULL));
+
 	// dopóki:
 	// nie zosta³ wstawiony klocek i plansza zmieni³a siê od ostatniego ruchu
 	// albo jest pierwsza tura gry
@@ -36,7 +38,7 @@ void generate_random_node()
 			board.first_turn = false;	// po wstawieniu klocka minê³a pierwsza tura
 
 			color_nodes();
-			push_to_animation_array(board.board_array[col][row]);
+			push_to_grow_animation_array(board.board_array[col][row]);
 		}
 	}
 }
