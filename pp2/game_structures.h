@@ -24,7 +24,8 @@ struct config {
     unsigned char node_max_color_r;     // wartoœæ maksymalna gradientu (r)
     unsigned char node_max_color_g;     // wartoœæ maksymalna gradientu (g)
     unsigned char node_max_color_b;     // wartoœæ maksymalna gradientu (b)
-    int grow_animation_duration;        // d³ugoœæ animacjki (klatki)
+    int grow_animation_duration;        // d³ugoœæ animacjki tworzenia klocka (klatki)
+    int slide_animation_speed;          // szybkoœæ animacji przesuwania klocków (klatki/s)
 };
 
 extern struct config cfg;
@@ -65,8 +66,6 @@ struct game_board {
     bool first_turn;                // informacja, czy aktualna tura jest pierwsza
     struct node** prev_board_array; // poprzedni stan planszy
     struct node** board_array;		// plansza z klockami
-    struct node* animation_array;
-    int animation_idx;
 };
 
 extern struct game_board board;
@@ -83,3 +82,15 @@ struct game_points {
 };
 
 extern struct game_points points;
+
+enum LAST_MOVE { NONE, LEFT, RIGHT, UP, DOWN };
+
+struct game_animations {
+    int grow_animation_idx;
+    struct node* grow_animation_array;
+    struct node* slide_animation_array;
+    bool done_sliding;
+    enum LAST_MOVE last_move;
+};
+
+extern struct game_animations animations;
