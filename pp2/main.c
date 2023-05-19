@@ -22,9 +22,14 @@ int game_init(struct game_window* game, struct config cfg)
     game->primitive_shapes_addon_initialized = al_init_primitives_addon();
     game->font_addon_initialized = al_init_font_addon();
     game->ttf_addon_initialized = al_init_ttf_addon();
+    game->image_addon_initialized = al_init_image_addon();
+    game->mouse_initialized = al_install_mouse();
     game->display = al_create_display(cfg.width, cfg.height);
     game->queue = al_create_event_queue();
-    game->font = al_load_font("Arial.ttf", cfg.font_size, 0);
+    game->font = al_load_font(cfg.font_name, cfg.font_size, 0);
+    game->points_font = al_load_font(cfg.font_name, cfg.points_font_size, 0);
+    game->title_font = al_load_font(cfg.font_name, cfg.title_font_size, 0);
+    game->option_font = al_load_font(cfg.font_name, cfg.option_font_size, 0);
     game->timer = al_create_timer(1.0 / (double)cfg.fps); // klatka co 1/30 sekundy = 30 klatek na sekundę
 
     // generacja kodów błędów, jeżeli któraś zmienna nie została zainicjowana poprawnie
@@ -34,7 +39,7 @@ int game_init(struct game_window* game, struct config cfg)
     if (!game->font_addon_initialized) return 103;
     if (!game->display) return 104;
     if (!game->queue) return 105;
-    if (!game->font) return 106;
+    if (!game->font || !game->points_font || !game->title_font || !game->option_font) return 106;
     if (!game->timer) return 107;
 
     // rejestrowanie źródeł eventów
@@ -112,16 +117,30 @@ int main()
 
     al_start_timer(game.timer); // start licznika gry
 
-    initialize_board();                                 // inicjalizacja plansy gry
-    initialize_nodes(10, 160);                          // inicjalizacja klocków
-    initialize_points(10, 10, 430, 140, cfg.font_size); // inicjalizacja licznika punktów
+    initialize_board();
+
+    int center_x = (cfg.width - (board.node_size * board.x_size) - (board.gap * (board.x_size - 1))) / 2;
+    int best_points_x = center_x + cfg.points_width + board.gap;
+    int points_center_y = (cfg.height - cfg.points_height - (board.gap * (board.y_size + 1)) - (board.node_size * board.y_size)) / 2;
+    int board_center_y = points_center_y + cfg.points_height + board.gap;
+    int restart_button_x = best_points_x + cfg.best_points_width + board.gap;
+    int menu_button_x = restart_button_x + cfg.restart_button_width + board.gap;
+    int restart_button_y = points_center_y + cfg.best_points_height - cfg.restart_button_height;
+    int menu_button_y = points_center_y + cfg.best_points_height - cfg.menu_button_height;
+    int option_center_x = (cfg.width - cfg.option_width) / 2;
+    int option_start_y = 300;
+
+    initialize_points(center_x, points_center_y);             // inicjalizacja licznika punktów
+    initialize_best_points(best_points_x, points_center_y);
+    initialize_nodes(center_x, board_center_y);               // inicjalizacja klocków
+    initialize_restart_button(restart_button_x, restart_button_y, "restart_button.png");
+    initialize_menu_button(menu_button_x, menu_button_y, "menu_button.png");
+
+    initialize_menu_option_buttons(option_center_x, option_start_y);
+    initialize_menu_popup();
 
     srand(time(NULL));
     generate_random_node();     // generowanie losowego klocka
-    color_nodes();              // kolorowanie klocków
-    draw_board();               // rysowanie planszy z wstawionymi klockami
-    draw_points();              // rysowanie licznika
-    al_flip_display();          // wyświetlanie narysowanej klatki
 
     // główna pętla gry
     bool running = true;    // zmienna sterująca działaniem głównej pętli gry
@@ -137,8 +156,19 @@ int main()
                 clear();
                 draw_board();
                 draw_points();
+                draw_best_points();
+
+                draw_restart_button();
+                draw_menu_button();
+
                 slide_animate_nodes(frame);
                 grow_animate_nodes(frame);
+
+                if(menu.visible)
+                draw_menu_popup();
+
+                handle_mouse_clicks();
+
                 al_flip_display();
 
                 if (frame == cfg.grow_animation_duration) clear_grow_animation_array();

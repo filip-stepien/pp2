@@ -46,16 +46,6 @@ void draw_board()
 // funkcja rysuj¹ca licznik punktów
 void draw_points()
 {
-	int points_length = snprintf(NULL, 0, "%d", points.counter) + strlen("Wynik: ");	// obliczenie iloœci pamiêci na ³añcuch z wynikiem
-	char* points_string = (char*)malloc(points_length + 1);		// rezerwacja pamiêci dla ³añcucha z wynikiem
-
-	if (points_string != NULL)
-		sprintf(points_string, "Wynik: %d", points.counter);	// zamiana wyniku cyfrowego na ³añcuch
-
-	int font_size = cfg.font_size;	// aktualny rozmiar czcionki
-	while (al_get_text_width(game.font, points_string) > points.width)	// dopóki czcionka nie mieœci siê w liczniku
-		game.font = al_load_font("Arial.ttf", font_size--, NULL);		// zmniejszaj rozmiar czcionki
-
 	// rysowanie licznika
 	al_draw_filled_rounded_rectangle(
 		points.top_x,
@@ -67,17 +57,160 @@ void draw_points()
 	);
 
 	// rysowanie punktów
-	al_draw_text(
-		game.font, 
+	al_draw_multiline_textf(
+		game.points_font,
 		al_map_rgb(cfg.points_text_color_r, cfg.points_text_color_g, cfg.points_text_color_b),
 		points.top_x + points.width / 2,
-		points.top_y + points.height / 2 - cfg.font_size / 2,
+		points.top_y + points.height / 2 - cfg.font_size - al_get_font_descent(game.points_font) / 2,
+		points.width - 2 * board.gap,
+		al_get_font_line_height(game.points_font) + cfg.points_text_leading,
 		ALLEGRO_ALIGN_CENTER,
-		points_string
+		"Wynik\n%d",
+		points.counter
+	);
+}
+
+void draw_best_points()
+{
+	// rysowanie licznika
+	al_draw_filled_rounded_rectangle(
+		best_points.top_x,
+		best_points.top_y,
+		best_points.bottom_x,
+		best_points.bottom_y,
+		10, 10,
+		al_map_rgb(cfg.points_bg_color_r, cfg.points_bg_color_g, cfg.points_bg_color_b)
 	);
 
-	al_load_font("Arial.ttf", cfg.font_size, NULL);	// przywrócenie domyœlnego rozmiaru czcionki
-	free(points_string);	// zwolnienie pamiêci ³añcucha z wynikiem
+	al_draw_multiline_textf(
+		game.points_font,
+		al_map_rgb(cfg.points_text_color_r, cfg.points_text_color_g, cfg.points_text_color_b),
+		best_points.top_x + best_points.width / 2,
+		best_points.top_y + best_points.height / 2 - cfg.font_size - al_get_font_descent(game.points_font) / 2,
+		best_points.width - 2 * board.gap,
+		al_get_font_line_height(game.points_font) + cfg.points_text_leading,
+		ALLEGRO_ALIGN_CENTER,
+		"Najlepszy\n%d",
+		best_points.counter
+	);
+}
+
+void draw_menu_button()
+{
+	al_draw_filled_rounded_rectangle(
+		menu_button.top_x,
+		menu_button.top_y,
+		menu_button.bottom_x,
+		menu_button.bottom_y,
+		10, 10,
+		menu_button.bg_color
+	);
+
+	if (menu_button.img != NULL)
+	{
+		al_draw_bitmap(
+			menu_button.img,
+			menu_button.top_x + menu_button.img_padding,
+			menu_button.top_y + menu_button.img_padding,
+			0
+		);
+	}
+}
+
+void draw_restart_button()
+{
+	al_draw_filled_rounded_rectangle(
+		restart_button.top_x,
+		restart_button.top_y,
+		restart_button.bottom_x,
+		restart_button.bottom_y,
+		10, 10,
+		restart_button.bg_color
+	);
+
+	if (restart_button.img != NULL)
+	{
+		al_draw_bitmap(
+			restart_button.img,
+			restart_button.top_x + restart_button.img_padding,
+			restart_button.top_y + restart_button.img_padding,
+			0
+		);
+	}
+}
+
+void draw_menu_popup()
+{
+	int title_width = al_get_text_width(game.title_font, "2048");
+	int title_center_x = cfg.width / 2;
+	char* options[3] = { "4 x 4", "5 x 5", "6 x 6" };
+
+	al_draw_filled_rectangle(
+		menu.top_x,
+		menu.top_y,
+		menu.bottom_x,
+		menu.bottom_y,
+		al_map_rgb(
+			cfg.menu_bg_color_r,
+			cfg.menu_bg_color_g,
+			cfg.menu_bg_color_b
+		)
+	);
+
+	al_draw_text(
+		game.title_font, 
+		al_map_rgb(
+			cfg.title_text_color_r,
+			cfg.title_text_color_g,
+			cfg.title_text_color_b
+		), 
+		title_center_x, 
+		100, 
+		ALLEGRO_ALIGN_CENTRE,
+		"2048"
+	);
+
+	al_draw_text(
+		game.font,
+		al_map_rgb(
+			cfg.title_text_color_r,
+			cfg.title_text_color_g,
+			cfg.title_text_color_b
+		),
+		title_center_x,
+		250,
+		ALLEGRO_ALIGN_CENTRE,
+		"Rozmiar planszy"
+	);
+	
+	for (int i = 0; i < menu.buttons_length; i++)
+	{
+		al_draw_filled_rounded_rectangle(
+			menu.buttons[i]->top_x,
+			menu.buttons[i]->top_y,
+			menu.buttons[i]->bottom_x,
+			menu.buttons[i]->bottom_y,
+			10, 10,
+			al_map_rgb(
+				cfg.option_bg_color_r,
+				cfg.option_bg_color_g,
+				cfg.option_bg_color_b
+			)
+		);
+
+		al_draw_text(
+			game.option_font,
+			al_map_rgb(
+				cfg.option_text_color_r,
+				cfg.option_text_color_g,
+				cfg.option_text_color_b
+			),
+			menu.buttons[i]->top_x + menu.buttons[i]->width / 2,
+			menu.buttons[i]->top_y + menu.buttons[i]->height / 2 - cfg.option_font_size / 2,
+			ALLEGRO_ALIGN_CENTRE,
+			options[i]
+		);
+	}
 }
 
 // funkcja czyszcz¹ca ekran gry

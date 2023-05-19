@@ -127,6 +127,8 @@ void merge_down()
 					// dodaj po³¹czenie do wyniku
 					points.counter += board.board_array[k + 1][j].value;
 
+					compare_and_set_best_score();
+
 					// ustaw znacznik po³¹czenia na bie¿¹cy element, aby nie móg³ byæ ponownie po³¹czony w tej turze
 					stacked = k + 1;
 				}
@@ -167,6 +169,8 @@ void merge_up()
 
 					// dodaj po³¹czenie do wyniku
 					points.counter += board.board_array[k + 1][j].value;
+
+					compare_and_set_best_score();
 
 					// ustaw znacznik po³¹czenia na bie¿¹cy element, aby nie móg³ byæ ponownie po³¹czony w tej turze
 					stacked = k + 1;
@@ -209,6 +213,8 @@ void merge_left()
 					// dodaj po³¹czenie do wyniku
 					points.counter += board.board_array[i][k + 1].value;
 
+					compare_and_set_best_score();
+
 					// ustaw znacznik po³¹czenia na bie¿¹cy element, aby nie móg³ byæ ponownie po³¹czony w tej turze
 					stacked = k + 1;
 				}
@@ -249,6 +255,8 @@ void merge_right()
 
 					// dodaj po³¹czenie do wyniku
 					points.counter += board.board_array[i][k + 1].value;
+
+					compare_and_set_best_score();
 
 					// ustaw znacznik po³¹czenia na bie¿¹cy element, aby nie móg³ byæ ponownie po³¹czony w tej turze
 					stacked = k + 1;
