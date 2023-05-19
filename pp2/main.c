@@ -42,6 +42,9 @@ int game_init(struct game_window* game, struct config cfg)
     if (!game->font || !game->points_font || !game->title_font || !game->option_font) return 106;
     if (!game->timer) return 107;
 
+    game->current_popup = NULL;
+    game->game_paused = true;
+
     // rejestrowanie źródeł eventów
     al_register_event_source(game->queue, al_get_keyboard_event_source());              // eventy klawiatury
     al_register_event_source(game->queue, al_get_display_event_source(game->display));  // eventy okna

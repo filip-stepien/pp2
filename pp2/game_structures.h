@@ -98,6 +98,8 @@ struct game_window {
     ALLEGRO_FONT* title_font;
     ALLEGRO_FONT* option_font;
     ALLEGRO_TIMER* timer;                       // licznik klatek gry
+    struct popup* current_popup;
+    bool game_paused;
 };
 
 extern struct game_window game;
@@ -165,8 +167,8 @@ extern struct button mute;
 extern struct button yes;
 extern struct button no;
 
-extern struct button* buttons[10];
-extern int buttons_length;
+extern struct button* ui_buttons[2];
+extern int ui_buttons_length;
 
 struct popup {
     int width;

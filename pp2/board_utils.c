@@ -55,34 +55,71 @@ void handle_mouse_clicks()
 	al_get_mouse_state(&state);
 
 	int left_click = state.buttons & 1;
-	
-	for (int i = 0; i < buttons_length; i++)
+	if (game.current_popup == NULL)
 	{
-		if (state.x >= buttons[i]->top_x && state.x <= buttons[i]->bottom_x && state.y >= buttons[i]->top_y && state.y <= buttons[i]->bottom_y)
+		for (int i = 0; i < ui_buttons_length; i++)
 		{
-			al_draw_filled_rounded_rectangle(
-				buttons[i]->top_x,
-				buttons[i]->top_y,
-				buttons[i]->bottom_x,
-				buttons[i]->bottom_y,
-				10, 10,
-				al_map_rgba(0, 0, 0, 20)
-			);
-
-
-			if (left_click && buttons[i]->on_click != NULL)
+			if (state.x >= ui_buttons[i]->top_x && state.x <= ui_buttons[i]->bottom_x && state.y >= ui_buttons[i]->top_y && state.y <= ui_buttons[i]->bottom_y)
 			{
 				al_draw_filled_rounded_rectangle(
-					buttons[i]->top_x, 
-					buttons[i]->top_y,
-					buttons[i]->bottom_x,
-					buttons[i]->bottom_y,
+					ui_buttons[i]->top_x,
+					ui_buttons[i]->top_y,
+					ui_buttons[i]->bottom_x,
+					ui_buttons[i]->bottom_y,
 					10, 10,
 					al_map_rgba(0, 0, 0, 20)
 				);
-				buttons[i]->on_click();
+
+
+				if (left_click && ui_buttons[i]->on_click != NULL)
+				{
+					al_draw_filled_rounded_rectangle(
+						ui_buttons[i]->top_x,
+						ui_buttons[i]->top_y,
+						ui_buttons[i]->bottom_x,
+						ui_buttons[i]->bottom_y,
+						10, 10,
+						al_map_rgba(0, 0, 0, 20)
+					);
+					ui_buttons[i]->on_click();
+				}
+				break;
 			}
-			break;
+		}
+	}
+	else
+	{
+		for (int i = 0; i < game.current_popup->buttons_length; i++)
+		{
+			if (state.x >= game.current_popup->buttons[i]->top_x && 
+				state.x <= game.current_popup->buttons[i]->bottom_x && 
+				state.y >= game.current_popup->buttons[i]->top_y &&
+				state.y <= game.current_popup->buttons[i]->bottom_y) 
+			{
+				al_draw_filled_rounded_rectangle(
+					game.current_popup->buttons[i]->top_x,
+					game.current_popup->buttons[i]->top_y,
+					game.current_popup->buttons[i]->bottom_x,
+					game.current_popup->buttons[i]->bottom_y,
+					10, 10,
+					al_map_rgba(0, 0, 0, 20)
+				);
+
+
+				if (left_click && game.current_popup->buttons[i]->on_click != NULL)
+				{
+					al_draw_filled_rounded_rectangle(
+						game.current_popup->buttons[i]->top_x,
+						game.current_popup->buttons[i]->top_y,
+						game.current_popup->buttons[i]->bottom_x,
+						game.current_popup->buttons[i]->bottom_y,
+						10, 10,
+						al_map_rgba(0, 0, 0, 20)
+					);
+					game.current_popup->buttons[i]->on_click();
+				}
+				break;
+			}
 		}
 	}
 }

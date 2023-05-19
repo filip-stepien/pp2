@@ -72,16 +72,8 @@ struct button mute;
 struct button yes;
 struct button no;
 
-struct button* buttons[10] = { 
+struct button* ui_buttons[2] = { 
 	&menu_button,
-	&restart_button,
-	&button_4x4,
-	&button_5x5,
-	&button_6x6,
-	&start,
-	&back,
-	&mute,
-	&yes,
-	&no
+	&restart_button
 };
-int buttons_length = 10;
+int ui_buttons_length = 2;

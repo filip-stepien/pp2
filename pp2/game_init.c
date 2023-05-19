@@ -184,11 +184,13 @@ void initialize_menu_button(int render_x, int render_y, char* img_name)
 		cfg.menu_button_bg_color_g,
 		cfg.menu_button_bg_color_b
 	);
+
 }
 
 void debug_handler()
 {
 	menu.visible = false;
+	game.current_popup = NULL;
 }
 
 void initialize_menu_option_buttons(int render_x, int render_y)
@@ -241,5 +243,6 @@ void initialize_menu_popup()
 	menu.buttons[1] = &button_5x5;
 	menu.buttons[2] = &button_6x6;
 
+	game.current_popup = &menu;
 	//TODO: zwalnianie pamieci
 }
