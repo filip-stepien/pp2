@@ -79,8 +79,10 @@ void handle_mouse_clicks()
 						ui_buttons[i]->bottom_x,
 						ui_buttons[i]->bottom_y,
 						10, 10,
-						al_map_rgba(0, 0, 0, 20)
+						al_map_rgba(0, 0, 0, 10)
 					);
+
+					if (!animations.click_cooldown)
 					ui_buttons[i]->on_click();
 				}
 				break;

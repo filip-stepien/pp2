@@ -34,23 +34,22 @@ struct config cfg = {
 	60,
 	10,
 	255, 255, 255,
-	0, 0, 0,		// kolor t³a (r, g, b)
+	255, 230, 208,		// kolor t³a (r, g, b)
 	255, 255, 255,	// kolor t³a licznika (r, g, b)
-	0, 0, 0,		// kolor klocka bez wartoœci (r, g, b)
-	0, 0, 0,		// kolor tekstu licznika (r, g, b)
-	0, 0, 0,		// kolor tekstu klocka (r, g, b)
-	255, 255, 255,
-	0, 0, 0,
+	255, 255, 255,		// kolor klocka bez wartoœci (r, g, b)
+	50, 50, 50,		// kolor tekstu licznika (r, g, b)
+	50, 50, 50,		// kolor tekstu klocka (r, g, b)
+	50, 50, 50,
+	50, 50, 50,
 	2,				// minimalna wartoœæ dla której obliczany jest gradient koloru
 	2048,			// maksymalna wartoœæ dla której obliczany jest gradient koloru
 	250, 250, 0,	// wartoœæ minimalna gradientu (r, g, b)
 	255, 0 , 120,	// wartoœæ maksymalna gradientu (r, g, b)
-	10,				// d³ugoœæ animacjki tworzenia klocka (klatki)
+	16,				// d³ugoœæ animacjki tworzenia klocka (klatki)
 	50,				// szybkoœæ animacji przesuwania klocków (klatki/s)
 	10,
-	255,
-	189,
-	132
+	30,
+	255, 230, 208
 };
 
 struct game_window game;

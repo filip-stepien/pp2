@@ -102,6 +102,10 @@ void board_cleanup()
 	free(animations.grow_animation_array);
 	animations.grow_animation_array = NULL;
 
+	free(menu.buttons);
+	menu.buttons = NULL;
+	menu.buttons_length = 0;
+
 	if (best_points.counter == points.counter && points.counter > 0)
 	{
 		FILE* save_file = fopen("score.txt", "w");
@@ -150,6 +154,16 @@ void initialize_best_points(int render_x, int render_y)
 	}
 }
 
+void restart_button_handler()
+{
+	animations.frame = 0;
+	animations.click_cooldown = true;
+	reset_board();
+	clear_slide_animation_array();
+	clear_grow_animation_array();
+	generate_random_node();
+}
+
 void initialize_restart_button(int render_x, int render_y, char* img_name)
 {
 	restart_button.img = al_load_bitmap(img_name);
@@ -160,7 +174,7 @@ void initialize_restart_button(int render_x, int render_y, char* img_name)
 	restart_button.bottom_x = render_x + cfg.restart_button_width;
 	restart_button.bottom_y = render_y + cfg.restart_button_height;
 	restart_button.img_padding = cfg.restart_button_img_padding;
-	restart_button.on_click = NULL;
+	restart_button.on_click = restart_button_handler;
 	restart_button.bg_color = al_map_rgb(
 		cfg.restart_button_bg_color_r,
 		cfg.restart_button_bg_color_g,
@@ -244,5 +258,4 @@ void initialize_menu_popup()
 	menu.buttons[2] = &button_6x6;
 
 	game.current_popup = &menu;
-	//TODO: zwalnianie pamieci
 }

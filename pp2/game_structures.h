@@ -75,6 +75,7 @@ struct config {
     int grow_animation_duration;            // d³ugoœæ animacjki tworzenia klocka (klatki)
     int slide_animation_speed;              // szybkoœæ animacji przesuwania klocków (klatki/s)
     int move_cooldown;                      // co jaki czas mo¿na wykonaæ ruch (klatki)
+    int click_cooldown;
     unsigned char menu_bg_color_r;
     unsigned char menu_bg_color_g;
     unsigned char menu_bg_color_b;
@@ -99,7 +100,6 @@ struct game_window {
     ALLEGRO_FONT* option_font;
     ALLEGRO_TIMER* timer;                       // licznik klatek gry
     struct popup* current_popup;
-    bool game_paused;
 };
 
 extern struct game_window game;
@@ -189,11 +189,13 @@ extern struct popup yesno;
 enum LAST_MOVE { NONE, LEFT, RIGHT, UP, DOWN };
 
 struct game_animations {
+    int frame;
     int grow_animation_idx;
     struct node* grow_animation_array;
     struct node* slide_animation_array;
     bool done_sliding;
     bool on_cooldown;
+    bool click_cooldown;
     enum LAST_MOVE last_move;
 };
 

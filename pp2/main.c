@@ -31,6 +31,7 @@ int game_init(struct game_window* game, struct config cfg)
     game->title_font = al_load_font(cfg.font_name, cfg.title_font_size, 0);
     game->option_font = al_load_font(cfg.font_name, cfg.option_font_size, 0);
     game->timer = al_create_timer(1.0 / (double)cfg.fps); // klatka co 1/30 sekundy = 30 klatek na sekundę
+    game->current_popup = NULL;
 
     // generacja kodów błędów, jeżeli któraś zmienna nie została zainicjowana poprawnie
     if (!game->game_initialized) return 100;
@@ -41,9 +42,6 @@ int game_init(struct game_window* game, struct config cfg)
     if (!game->queue) return 105;
     if (!game->font || !game->points_font || !game->title_font || !game->option_font) return 106;
     if (!game->timer) return 107;
-
-    game->current_popup = NULL;
-    game->game_paused = true;
 
     // rejestrowanie źródeł eventów
     al_register_event_source(game->queue, al_get_keyboard_event_source());              // eventy klawiatury
@@ -122,6 +120,9 @@ int main()
 
     initialize_board();
 
+    cfg.points_width -= (cfg.board_x_size - 4) * (board.node_size / 16);
+    cfg.best_points_width -= (cfg.board_x_size - 4) * (board.node_size / 16);
+    
     int center_x = (cfg.width - (board.node_size * board.x_size) - (board.gap * (board.x_size - 1))) / 2;
     int best_points_x = center_x + cfg.points_width + board.gap;
     int points_center_y = (cfg.height - cfg.points_height - (board.gap * (board.y_size + 1)) - (board.node_size * board.y_size)) / 2;
@@ -149,7 +150,6 @@ int main()
     bool running = true;    // zmienna sterująca działaniem głównej pętli gry
     ALLEGRO_EVENT event;    // zmienna w której znajdzie się przechwycony event 
 
-    int frame = 0;
     while (running)
     {
         al_wait_for_event(game.queue, &event);  // nasłuchuj eventów
@@ -164,21 +164,24 @@ int main()
                 draw_restart_button();
                 draw_menu_button();
 
-                slide_animate_nodes(frame);
-                grow_animate_nodes(frame);
+                slide_animate_nodes(animations.frame);
+
+                grow_animate_nodes(animations.frame);
 
                 if(menu.visible)
                 draw_menu_popup();
 
-                handle_mouse_clicks();
+                handle_mouse_clicks(animations.frame);
 
                 al_flip_display();
 
-                if (frame == cfg.grow_animation_duration) clear_grow_animation_array();
+                if (animations.frame == cfg.grow_animation_duration) clear_grow_animation_array();
 
-                if(frame == cfg.move_cooldown) animations.on_cooldown = false;
+                if (animations.frame == cfg.move_cooldown) animations.on_cooldown = false;
 
-                frame++;
+                if (animations.frame == cfg.click_cooldown) animations.click_cooldown = false;
+
+                animations.frame++;
                 break;
 
             case ALLEGRO_EVENT_KEY_DOWN:        // event "przycisk wciśnięty"
@@ -193,6 +196,7 @@ int main()
                         move_up();
                         color_nodes();
                         clear_slide_animation_array();
+                        clear_grow_animation_array();
                         get_nodes_to_slide_animate_down_to_up();
                         break;
 
@@ -203,6 +207,7 @@ int main()
                         move_down();
                         color_nodes();
                         clear_slide_animation_array();
+                        clear_grow_animation_array();
                         get_nodes_to_slide_animate_up_to_down();
                         break;
 
@@ -213,6 +218,7 @@ int main()
                         move_left();
                         color_nodes();
                         clear_slide_animation_array();
+                        clear_grow_animation_array();
                         get_nodes_to_slide_animate_right_to_left();
                         break;
 
@@ -223,13 +229,17 @@ int main()
                         move_right();
                         color_nodes();
                         clear_slide_animation_array();
+                        clear_grow_animation_array();
                         get_nodes_to_slide_animate_left_to_right();
                         break;
 
                     case ALLEGRO_KEY_R:         // przycisk - r
-                        reset_board();          // zresetuj planszę
+                        reset_board();
                         clear_slide_animation_array();
                         clear_grow_animation_array();
+                        generate_random_node();
+                        color_nodes();
+                        animations.frame = 0;
 
                         break;
 
@@ -243,7 +253,7 @@ int main()
                     event.keyboard.keycode == ALLEGRO_KEY_UP ||
                     event.keyboard.keycode == ALLEGRO_KEY_DOWN) {
                     generate_random_node(); // generowanie losowego klocka
-                    frame = 0;
+                    animations.frame = 0;
                     animations.done_sliding = false;
                     animations.on_cooldown = true;
 
