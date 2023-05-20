@@ -10,6 +10,9 @@ struct config {
     int width;                              // szerokoœæ okna gry
     int height;                             // wysokoœæ okna gry
     char* font_name;
+    char* restart_button_filename;
+    char* menu_button_filename;
+    char* mute_button_filenames[2];
     int font_size;                          // wielkoœæ czcionki
     int title_font_size;
     int option_font_size;
@@ -31,6 +34,11 @@ struct config {
     int option_height;
     int option_padding;
     int option_gap;
+    int mute_button_width;
+    int mute_button_height;
+    unsigned char mute_button_bg_color_r;
+    unsigned char mute_button_bg_color_g;
+    unsigned char mute_button_bg_color_b;
     unsigned char option_bg_color_r;
     unsigned char option_bg_color_g;
     unsigned char option_bg_color_b;
@@ -75,12 +83,14 @@ struct config {
     int grow_animation_duration;            // d³ugoœæ animacjki tworzenia klocka (klatki)
     int slide_animation_speed;              // szybkoœæ animacji przesuwania klocków (klatki/s)
     int move_cooldown;                      // co jaki czas mo¿na wykonaæ ruch (klatki)
+    int click_cooldown;
     unsigned char menu_bg_color_r;
     unsigned char menu_bg_color_g;
     unsigned char menu_bg_color_b;
 };
 
 extern struct config cfg;
+
 
 // struktura zawieraj¹ca g³ówne zmienne okna gry
 struct game_window {
@@ -91,6 +101,8 @@ struct game_window {
     bool ttf_addon_initialized;                 // czy modu³ z plikami .ttf zosta³ zainicjowany
     bool image_addon_initialized;
     bool mouse_initialized;
+    bool started;
+    bool muted;
     ALLEGRO_DISPLAY* display;                   // okno gry
     ALLEGRO_EVENT_QUEUE* queue;                 // kolejka gry
     ALLEGRO_FONT* font;                         // czcionka okna
@@ -99,7 +111,6 @@ struct game_window {
     ALLEGRO_FONT* option_font;
     ALLEGRO_TIMER* timer;                       // licznik klatek gry
     struct popup* current_popup;
-    bool game_paused;
 };
 
 extern struct game_window game;
@@ -153,6 +164,7 @@ struct button {
     int bottom_y;
     int img_padding;
     ALLEGRO_COLOR bg_color;
+    bool visible;
     void (*on_click)();
 };
 
@@ -161,13 +173,10 @@ extern struct button restart_button;
 extern struct button button_4x4;
 extern struct button button_5x5;
 extern struct button button_6x6;
-extern struct button start;
 extern struct button back;
 extern struct button mute;
-extern struct button yes;
-extern struct button no;
 
-extern struct button* ui_buttons[2];
+extern struct button* ui_buttons[3];
 extern int ui_buttons_length;
 
 struct popup {
@@ -189,11 +198,14 @@ extern struct popup yesno;
 enum LAST_MOVE { NONE, LEFT, RIGHT, UP, DOWN };
 
 struct game_animations {
+    int frame;
+    int click_frame;
     int grow_animation_idx;
     struct node* grow_animation_array;
     struct node* slide_animation_array;
     bool done_sliding;
     bool on_cooldown;
+    bool click_cooldown;
     enum LAST_MOVE last_move;
 };
 

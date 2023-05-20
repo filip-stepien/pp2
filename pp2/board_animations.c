@@ -75,7 +75,11 @@ void slide_animation_left_to_right(struct node from, struct node to, int current
 
 		al_draw_textf(
 			game.font,
-			al_map_rgb(0, 0, 0),
+			al_map_rgb(
+				cfg.node_text_color_r,
+				cfg.node_text_color_g,
+				cfg.node_text_color_b
+			),
 			to.top_x + to.size / 2,
 			to.top_y + to.size / 2 - cfg.font_size / 2,
 			ALLEGRO_ALIGN_CENTER,
@@ -100,7 +104,11 @@ void slide_animation_left_to_right(struct node from, struct node to, int current
 
 		al_draw_textf(
 			game.font,
-			al_map_rgb(0, 0, 0),
+			al_map_rgb(
+				cfg.node_text_color_r,
+				cfg.node_text_color_g,
+				cfg.node_text_color_b
+			),
 			from.top_x + step + from.size / 2,
 			from.top_y + from.size / 2 - cfg.font_size / 2,
 			ALLEGRO_ALIGN_CENTER,
@@ -127,7 +135,11 @@ void slide_animation_right_to_left(struct node from, struct node to, int current
 
 		al_draw_textf(
 			game.font,
-			al_map_rgb(0, 0, 0),
+			al_map_rgb(
+				cfg.node_text_color_r,
+				cfg.node_text_color_g,
+				cfg.node_text_color_b
+			),
 			to.top_x + to.size / 2,
 			to.top_y + to.size / 2 - cfg.font_size / 2,
 			ALLEGRO_ALIGN_CENTER,
@@ -152,7 +164,11 @@ void slide_animation_right_to_left(struct node from, struct node to, int current
 
 		al_draw_textf(
 			game.font,
-			al_map_rgb(0, 0, 0),
+			al_map_rgb(
+				cfg.node_text_color_r,
+				cfg.node_text_color_g,
+				cfg.node_text_color_b
+			),
 			from.top_x - step + from.size / 2,
 			from.top_y + from.size / 2 - cfg.font_size / 2,
 			ALLEGRO_ALIGN_CENTER,
@@ -178,7 +194,11 @@ void slide_animation_down_to_up(struct node from, struct node to, int current_fr
 
 		al_draw_textf(
 			game.font,
-			al_map_rgb(0, 0, 0),
+			al_map_rgb(
+				cfg.node_text_color_r,
+				cfg.node_text_color_g,
+				cfg.node_text_color_b
+			),
 			to.top_x + to.size / 2,
 			to.top_y + to.size / 2 - cfg.font_size / 2,
 			ALLEGRO_ALIGN_CENTER,
@@ -203,7 +223,11 @@ void slide_animation_down_to_up(struct node from, struct node to, int current_fr
 
 		al_draw_textf(
 			game.font,
-			al_map_rgb(0, 0, 0),
+			al_map_rgb(
+				cfg.node_text_color_r,
+				cfg.node_text_color_g,
+				cfg.node_text_color_b
+			),
 			from.top_x + from.size / 2,
 			from.top_y - step + from.size / 2 - cfg.font_size / 2,
 			ALLEGRO_ALIGN_CENTER,
@@ -230,7 +254,11 @@ void slide_animation_up_to_down(struct node from, struct node to, int current_fr
 
 		al_draw_textf(
 			game.font,
-			al_map_rgb(0, 0, 0),
+			al_map_rgb(
+				cfg.node_text_color_r,
+				cfg.node_text_color_g,
+				cfg.node_text_color_b
+			),
 			to.top_x + to.size / 2,
 			to.top_y + to.size / 2 - cfg.font_size / 2,
 			ALLEGRO_ALIGN_CENTER,
@@ -255,7 +283,11 @@ void slide_animation_up_to_down(struct node from, struct node to, int current_fr
 
 		al_draw_textf(
 			game.font,
-			al_map_rgb(0, 0, 0),
+			al_map_rgb(
+				cfg.node_text_color_r, 
+				cfg.node_text_color_g,
+				cfg.node_text_color_b
+			),
 			from.top_x + from.size / 2,
 			from.top_y + step + from.size / 2 - cfg.font_size / 2,
 			ALLEGRO_ALIGN_CENTER,
@@ -377,7 +409,9 @@ void slide_animate_nodes(int frame)
 {
 	for (int i = 0; i < board.total_size; i += 2)
 	{
-		if (!animations.done_sliding && animations.slide_animation_array[i].value == animations.slide_animation_array[i + 1].value)
+		if (!animations.done_sliding && 
+			animations.slide_animation_array[i].value == animations.slide_animation_array[i + 1].value && 
+			animations.slide_animation_array[i].top_y != 0)
 		{
 			al_draw_filled_rounded_rectangle(
 				animations.slide_animation_array[i + 1].top_x,
@@ -386,12 +420,18 @@ void slide_animate_nodes(int frame)
 				animations.slide_animation_array[i + 1].bottom_y,
 				10,
 				10,
-				al_map_rgb(255, 255, 255)
+				al_map_rgb(
+					cfg.default_node_color_r, 
+					cfg.default_node_color_g,
+					cfg.default_node_color_b
+				)
 			);
 		}
 
-		switch (animations.last_move)
+		if (animations.slide_animation_array[i].value != 0 && animations.slide_animation_array[i + 1].value != 0)
 		{
+			switch (animations.last_move)
+			{
 			case LEFT:
 				slide_animation_right_to_left(animations.slide_animation_array[i], animations.slide_animation_array[i + 1], frame);
 				break;
@@ -404,6 +444,7 @@ void slide_animate_nodes(int frame)
 			case DOWN:
 				slide_animation_up_to_down(animations.slide_animation_array[i], animations.slide_animation_array[i + 1], frame);
 				break;
+			}
 		}
 	}
 }

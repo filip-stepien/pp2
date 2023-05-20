@@ -143,7 +143,7 @@ void draw_menu_popup()
 {
 	int title_width = al_get_text_width(game.title_font, "2048");
 	int title_center_x = cfg.width / 2;
-	char* options[3] = { "4 x 4", "5 x 5", "6 x 6" };
+	char* options[5] = { "4 x 4", "5 x 5", "6 x 6", "Anuluj", ""};
 
 	al_draw_filled_rectangle(
 		menu.top_x,
@@ -185,30 +185,55 @@ void draw_menu_popup()
 	
 	for (int i = 0; i < menu.buttons_length; i++)
 	{
-		al_draw_filled_rounded_rectangle(
-			menu.buttons[i]->top_x,
-			menu.buttons[i]->top_y,
-			menu.buttons[i]->bottom_x,
-			menu.buttons[i]->bottom_y,
-			10, 10,
-			al_map_rgb(
-				cfg.option_bg_color_r,
-				cfg.option_bg_color_g,
-				cfg.option_bg_color_b
-			)
-		);
+		if (menu.buttons[i]->visible)
+		{
+			al_draw_filled_rounded_rectangle(
+				menu.buttons[i]->top_x,
+				menu.buttons[i]->top_y,
+				menu.buttons[i]->bottom_x,
+				menu.buttons[i]->bottom_y,
+				10, 10,
+				al_map_rgb(
+					cfg.option_bg_color_r,
+					cfg.option_bg_color_g,
+					cfg.option_bg_color_b
+				)
+			);
 
-		al_draw_text(
-			game.option_font,
-			al_map_rgb(
-				cfg.option_text_color_r,
-				cfg.option_text_color_g,
-				cfg.option_text_color_b
-			),
-			menu.buttons[i]->top_x + menu.buttons[i]->width / 2,
-			menu.buttons[i]->top_y + menu.buttons[i]->height / 2 - cfg.option_font_size / 2,
-			ALLEGRO_ALIGN_CENTRE,
-			options[i]
+			al_draw_text(
+				game.option_font,
+				al_map_rgb(
+					cfg.option_text_color_r,
+					cfg.option_text_color_g,
+					cfg.option_text_color_b
+				),
+				menu.buttons[i]->top_x + menu.buttons[i]->width / 2,
+				menu.buttons[i]->top_y + menu.buttons[i]->height / 2 - cfg.option_font_size / 2,
+				ALLEGRO_ALIGN_CENTRE,
+				options[i]
+			);
+		}
+	}
+}
+
+void draw_mute_button()
+{
+	al_draw_filled_rounded_rectangle(
+		mute.top_x,
+		mute.top_y,
+		mute.bottom_x,
+		mute.bottom_y,
+		10, 10,
+		mute.bg_color
+	);
+
+	if (mute.img != NULL)
+	{
+		al_draw_bitmap(
+			mute.img,
+			mute.top_x + mute.img_padding,
+			mute.top_y + mute.img_padding,
+			0
 		);
 	}
 }
