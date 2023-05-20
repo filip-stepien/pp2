@@ -33,6 +33,7 @@ int game_init(struct game_window* game, struct config cfg)
     game->timer = al_create_timer(1.0 / (double)cfg.fps); // klatka co 1/30 sekundy = 30 klatek na sekundę
     game->current_popup = NULL;
     game->started = false;
+    game->muted = false;
 
     // generacja kodów błędów, jeżeli któraś zmienna nie została zainicjowana poprawnie
     if (!game->game_initialized) return 100;
@@ -136,9 +137,12 @@ int main()
 
     int option_center_x = (cfg.width - cfg.option_width) / 2;
     int option_start_y = 300;
+    int mute_button_left_x = cfg.width - cfg.mute_button_width;
 
     initialize_menu_option_buttons(option_center_x, option_start_y);
     initialize_menu_popup();
+
+    initialize_mute_button(mute_button_left_x, 0);
 
     // główna pętla gry
     bool running = true;    // zmienna sterująca działaniem głównej pętli gry
@@ -165,7 +169,9 @@ int main()
 
                 if(menu.visible) draw_menu_popup();
 
-                handle_mouse_clicks(animations.frame);
+                draw_mute_button();
+
+                handle_mouse_clicks(animations.click_frame);
 
                 al_flip_display();
 
@@ -173,9 +179,10 @@ int main()
 
                 if (animations.frame == cfg.move_cooldown) animations.on_cooldown = false;
 
-                if (animations.frame == cfg.click_cooldown) animations.click_cooldown = false;
+                if (animations.click_frame == cfg.click_cooldown) animations.click_cooldown = false;
 
                 animations.frame++;
+                animations.click_frame++;
                 break;
 
             case ALLEGRO_EVENT_KEY_DOWN:        // event "przycisk wciśnięty"

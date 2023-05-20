@@ -118,6 +118,8 @@ void handle_mouse_clicks()
 						10, 10,
 						al_map_rgba(0, 0, 0, 20)
 					);
+
+					if (!animations.click_cooldown)
 					game.current_popup->buttons[i]->on_click();
 				}
 				break;

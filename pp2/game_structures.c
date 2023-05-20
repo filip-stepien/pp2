@@ -9,15 +9,15 @@ struct config cfg = {
 	"Arial.ttf",
 	"restart_button.png",
 	"menu_button.png",
-	"mute_button.png",
+	{ "mute_button_on.png", "mute_button_off.png"},
 	24,				// wielkoœæ czcionki
 	100,
 	40,
 	20,				// wielkoœæ czcionki liczników punktów
 	10,				// interlinia liczników punktów
 	60,				// fps
-	6,				// maksymalna iloœæ klocków na osi X
-	6,				// maksymalna iloœæ klocków na osi Y
+	4,				// maksymalna iloœæ klocków na osi X
+	4,				// maksymalna iloœæ klocków na osi Y
 	100,			// wielkoœæ klocka (px)
 	10,				// wielkoœæ przerwy miêdzy klockami (10px)
 	200,			// szerokoœæ licznika punktów
@@ -31,6 +31,9 @@ struct config cfg = {
 	80,
 	10,
 	20,
+	50,
+	50,
+	255, 255, 255,
 	255, 255, 255,
 	255, 255, 255,
 	60,
@@ -71,8 +74,9 @@ struct button button_6x6;
 struct button back;
 struct button mute;
 
-struct button* ui_buttons[2] = { 
+struct button* ui_buttons[3] = { 
 	&menu_button,
-	&restart_button
+	&restart_button,
+	&mute
 };
-int ui_buttons_length = 2;
+int ui_buttons_length = 3;

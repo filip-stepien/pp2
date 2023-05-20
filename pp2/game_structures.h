@@ -12,7 +12,7 @@ struct config {
     char* font_name;
     char* restart_button_filename;
     char* menu_button_filename;
-    char* mute_button_filename;
+    char* mute_button_filenames[2];
     int font_size;                          // wielkoœæ czcionki
     int title_font_size;
     int option_font_size;
@@ -34,6 +34,11 @@ struct config {
     int option_height;
     int option_padding;
     int option_gap;
+    int mute_button_width;
+    int mute_button_height;
+    unsigned char mute_button_bg_color_r;
+    unsigned char mute_button_bg_color_g;
+    unsigned char mute_button_bg_color_b;
     unsigned char option_bg_color_r;
     unsigned char option_bg_color_g;
     unsigned char option_bg_color_b;
@@ -97,6 +102,7 @@ struct game_window {
     bool image_addon_initialized;
     bool mouse_initialized;
     bool started;
+    bool muted;
     ALLEGRO_DISPLAY* display;                   // okno gry
     ALLEGRO_EVENT_QUEUE* queue;                 // kolejka gry
     ALLEGRO_FONT* font;                         // czcionka okna
@@ -170,7 +176,7 @@ extern struct button button_6x6;
 extern struct button back;
 extern struct button mute;
 
-extern struct button* ui_buttons[2];
+extern struct button* ui_buttons[3];
 extern int ui_buttons_length;
 
 struct popup {
@@ -193,6 +199,7 @@ enum LAST_MOVE { NONE, LEFT, RIGHT, UP, DOWN };
 
 struct game_animations {
     int frame;
+    int click_frame;
     int grow_animation_idx;
     struct node* grow_animation_array;
     struct node* slide_animation_array;

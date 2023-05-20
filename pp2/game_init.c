@@ -144,8 +144,9 @@ void initialize_best_points(int render_x, int render_y, int new_width)
 
 void restart_button_handler()
 {
-	animations.frame = 0;
+	animations.click_frame = 0;
 	animations.click_cooldown = true;
+	animations.frame = 0;
 	reset_board();
 	clear_slide_animation_array();
 	clear_grow_animation_array();
@@ -259,6 +260,41 @@ void back_handler()
 	game.current_popup = NULL;
 }
 
+void mute_button_handler()
+{
+	animations.click_cooldown = true;
+	animations.click_frame = 0;
+	if (game.muted)
+	{
+		mute.img = al_load_bitmap(cfg.mute_button_filenames[0]);
+		game.muted = false;
+	}
+	else
+	{
+		mute.img = al_load_bitmap(cfg.mute_button_filenames[1]);
+		game.muted = true;
+	}
+}
+
+void initialize_mute_button(int render_x, int render_y)
+{
+	mute.img = al_load_bitmap(cfg.mute_button_filenames[0]);
+	mute.width = cfg.mute_button_width;
+	mute.height = cfg.mute_button_height;
+	mute.top_x = render_x;
+	mute.top_y = render_y;
+	mute.bottom_x = render_x + cfg.mute_button_width;
+	mute.bottom_y = render_y + cfg.mute_button_height;
+	mute.img_padding = 0;
+	mute.visible = true;
+	mute.on_click = mute_button_handler;
+	mute.bg_color = al_map_rgb(
+		cfg.mute_button_bg_color_r,
+		cfg.mute_button_bg_color_g,
+		cfg.mute_button_bg_color_b
+	);
+}
+
 void initialize_menu_option_buttons(int render_x, int render_y)
 {
 	button_4x4.img = button_5x5.img = button_6x6.img = back.img = NULL;
@@ -313,12 +349,13 @@ void initialize_menu_popup()
 	);
 	menu.visible = true;
 
-	menu.buttons_length = 4;
-	menu.buttons = (struct button**)calloc(4, sizeof(struct button*));
+	menu.buttons_length = 5;
+	menu.buttons = (struct button**)calloc(5, sizeof(struct button*));
 	menu.buttons[0] = &button_4x4;
 	menu.buttons[1] = &button_5x5;
 	menu.buttons[2] = &button_6x6;
 	menu.buttons[3] = &back;
+	menu.buttons[4] = &mute;
 
 	game.current_popup = &menu;
 }
