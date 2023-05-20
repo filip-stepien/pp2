@@ -216,57 +216,6 @@ void draw_menu_popup()
 	}
 }
 
-void draw_end_popup()
-{
-	al_draw_filled_rounded_rectangle(
-		end.top_x,
-		end.top_y,
-		end.bottom_x,
-		end.bottom_y,
-		10, 10,
-		end.bg_color
-	);
-
-	al_draw_textf(
-		game.title_font,
-		al_map_rgb(
-			cfg.end_title_color_r,
-			cfg.end_title_color_g,
-			cfg.end_title_color_b
-		),
-		end.top_x + end.width/2,
-		end.top_y + cfg.end_popup_padding,
-		ALLEGRO_ALIGN_CENTRE,
-		"Koniec gry!"
-	);
-
-	al_draw_filled_rounded_rectangle(
-		end.buttons[0]->top_x,
-		end.buttons[0]->top_y,
-		end.buttons[0]->bottom_x,
-		end.buttons[0]->bottom_y,
-		10, 10,
-		al_map_rgb(
-			cfg.end_button_bg_color_r,
-			cfg.end_button_bg_color_g,
-			cfg.end_button_bg_color_b
-		)
-	);
-
-	al_draw_text(
-		game.option_font,
-		al_map_rgb(
-			cfg.end_button_text_color_r,
-			cfg.end_button_text_color_g,
-			cfg.end_button_text_color_b
-		),
-		end.buttons[0]->top_x + menu.buttons[0]->width / 2,
-		end.buttons[0]->top_y + menu.buttons[0]->height / 2 - cfg.option_font_size / 2,
-		ALLEGRO_ALIGN_CENTRE,
-		"Restart"
-	);
-}
-
 // funkcja czyszcz¹ca ekran gry
 void clear()
 {
