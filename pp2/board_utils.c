@@ -96,7 +96,8 @@ void handle_mouse_clicks()
 			if (state.x >= game.current_popup->buttons[i]->top_x && 
 				state.x <= game.current_popup->buttons[i]->bottom_x && 
 				state.y >= game.current_popup->buttons[i]->top_y &&
-				state.y <= game.current_popup->buttons[i]->bottom_y) 
+				state.y <= game.current_popup->buttons[i]->bottom_y && 
+				game.current_popup->buttons[i]->visible)
 			{
 				al_draw_filled_rounded_rectangle(
 					game.current_popup->buttons[i]->top_x,

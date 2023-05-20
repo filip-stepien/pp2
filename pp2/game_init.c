@@ -194,7 +194,6 @@ void initialize_menu_button(int render_x, int render_y, char* img_name)
 		cfg.menu_button_bg_color_g,
 		cfg.menu_button_bg_color_b
 	);
-
 }
 
 void start_new_game()
@@ -321,4 +320,55 @@ void initialize_menu_popup()
 	menu.buttons[3] = &back;
 
 	game.current_popup = &menu;
+}
+
+void end_button_handler()
+{
+	restart_button_handler();
+	game.current_popup = NULL;
+	end.visible = false;
+}
+
+void initialize_end_button(int render_x, int render_y)
+{
+	new_game.img = NULL;
+	new_game.width = cfg.option_width;
+	new_game.height = cfg.option_height;
+	new_game.top_x = render_x;
+	new_game.top_y = render_y;
+	new_game.bottom_x = render_x + cfg.option_width;
+	new_game.bottom_y = render_y + cfg.option_height;
+	new_game.img_padding = 0;
+	new_game.visible = true;
+	new_game.on_click = end_button_handler;
+	new_game.bg_color = al_map_rgb(
+		cfg.option_bg_color_r,
+		cfg.option_bg_color_g,
+		cfg.option_bg_color_b
+	);
+}
+
+void initialize_end_popup()
+{
+	int center_x = (cfg.width - cfg.end_popup_width) / 2;
+	int center_y = (cfg.height - cfg.end_popup_height) / 2;
+
+	end.width = cfg.end_popup_width;
+	end.height = cfg.end_popup_height;
+	end.top_x = center_x;
+	end.top_y = center_y;
+	end.bottom_x = center_x + cfg.end_popup_width;
+	end.bottom_y = center_y + cfg.end_popup_height;
+	end.visible = false;
+	end.bg_color = al_map_rgba(
+		cfg.end_bg_color_r,
+		cfg.end_bg_color_g,
+		cfg.end_bg_color_b,
+		cfg.end_bg_color_a
+	);
+
+	end.buttons_length = 1;
+	end.buttons = (struct button**)calloc(end.buttons_length, sizeof(struct button*));
+
+	end.buttons[0] = &new_game;
 }

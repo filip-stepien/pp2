@@ -136,9 +136,13 @@ int main()
 
     int option_center_x = (cfg.width - cfg.option_width) / 2;
     int option_start_y = 300;
+    int end_option_start_y = 430;
 
     initialize_menu_option_buttons(option_center_x, option_start_y);
     initialize_menu_popup();
+
+    initialize_end_button(option_center_x, end_option_start_y);
+    initialize_end_popup();
 
     // główna pętla gry
     bool running = true;    // zmienna sterująca działaniem głównej pętli gry
@@ -163,7 +167,9 @@ int main()
                     grow_animate_nodes(animations.frame);
                 }
 
-                if(menu.visible) draw_menu_popup();
+                if (menu.visible) draw_menu_popup();
+                
+                if (end.visible) draw_end_popup();
 
                 handle_mouse_clicks(animations.frame);
 
@@ -251,8 +257,11 @@ int main()
                     animations.done_sliding = false;
                     animations.on_cooldown = true;
 
-                    if (did_game_end())     // jeżeli gra się zakończyła
-                        puts("Koniec! Wciśnij klawisz R aby zrestartowac gre.");   // komunikat o końcu gry
+                    if (did_game_end())
+                    {
+                        game.current_popup = &end;
+                        end.visible = true;
+                    }
                 }
                 break;
 

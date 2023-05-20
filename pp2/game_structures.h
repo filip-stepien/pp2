@@ -34,6 +34,13 @@ struct config {
     int option_height;
     int option_padding;
     int option_gap;
+    int end_popup_width;
+    int end_popup_height;
+    int end_popup_padding;
+    unsigned char end_bg_color_r;
+    unsigned char end_bg_color_g;
+    unsigned char end_bg_color_b;
+    unsigned char end_bg_color_a;
     unsigned char option_bg_color_r;
     unsigned char option_bg_color_g;
     unsigned char option_bg_color_b;
@@ -67,6 +74,15 @@ struct config {
     unsigned char option_text_color_r;
     unsigned char option_text_color_g;
     unsigned char option_text_color_b;
+    unsigned char end_title_color_r;
+    unsigned char end_title_color_g;
+    unsigned char end_title_color_b;
+    unsigned char end_button_text_color_r;
+    unsigned char end_button_text_color_g;
+    unsigned char end_button_text_color_b;
+    unsigned char end_button_bg_color_r;
+    unsigned char end_button_bg_color_g;
+    unsigned char end_button_bg_color_b;
     int node_min_interpolation;             // minimalna wartoœæ dla której obliczany jest gradient koloru
     int node_max_interpolation;             // maksymalna wartoœæ dla której obliczany jest gradient koloru
     unsigned char node_min_color_r;         // wartoœæ minimalna gradientu (r)
@@ -168,6 +184,7 @@ extern struct button button_4x4;
 extern struct button button_5x5;
 extern struct button button_6x6;
 extern struct button back;
+extern struct button new_game;
 extern struct button mute;
 
 extern struct button* ui_buttons[2];
@@ -187,7 +204,7 @@ struct popup {
 };
 
 extern struct popup menu;
-extern struct popup yesno;
+extern struct popup end;
 
 enum LAST_MOVE { NONE, LEFT, RIGHT, UP, DOWN };
 

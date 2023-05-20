@@ -31,6 +31,10 @@ struct config cfg = {
 	80,
 	10,
 	20,
+	560,
+	280,
+	20,
+	70, 70, 70, 130,
 	255, 255, 255,
 	255, 255, 255,
 	60,
@@ -43,6 +47,9 @@ struct config cfg = {
 	50, 50, 50,		// kolor tekstu licznika (r, g, b)
 	50, 50, 50,		// kolor tekstu klocka (r, g, b)
 	50, 50, 50,
+	50, 50, 50,
+	50, 50, 50,
+	255, 255, 255,
 	50, 50, 50,
 	2,				// minimalna wartoœæ dla której obliczany jest gradient koloru
 	2048,			// maksymalna wartoœæ dla której obliczany jest gradient koloru
@@ -61,7 +68,7 @@ struct game_points points;
 struct game_points best_points;
 struct game_animations animations;
 struct popup menu;
-struct popup yesno;
+struct popup end;
 
 struct button menu_button;
 struct button restart_button;
@@ -69,6 +76,7 @@ struct button button_4x4;
 struct button button_5x5;
 struct button button_6x6;
 struct button back;
+struct button new_game;
 struct button mute;
 
 struct button* ui_buttons[2] = { 
