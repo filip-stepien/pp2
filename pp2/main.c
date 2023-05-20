@@ -55,6 +55,21 @@ int game_init(struct game_window* game, struct config cfg)
 // funkcja sprzątająca zainicjalizowane elementy gry
 void game_cleanup(struct game_window* game)
 {
+    if (best_points.counter == points.counter && points.counter > 0)
+    {
+        FILE* save_file = NULL;
+        fopen_s(&save_file, "score.txt", "w");
+        if (save_file != NULL)
+        {
+            fprintf_s(save_file, "%d", best_points.counter);
+            fclose(save_file);
+        }
+    }
+
+    free(menu.buttons);
+    menu.buttons = NULL;
+    menu.buttons_length = 0;
+
     al_destroy_font(game->font);            // usuwanie czcionki
     al_destroy_display(game->display);      // usuwanie okna
     al_destroy_timer(game->timer);          // usuwanie licznika
@@ -164,7 +179,7 @@ int main()
                 break;
 
             case ALLEGRO_EVENT_KEY_DOWN:        // event "przycisk wciśnięty"
-                if (animations.on_cooldown) break;
+                if (animations.on_cooldown || !game.started || game.current_popup != NULL) break;
 
                 switch (event.keyboard.keycode)
                 {

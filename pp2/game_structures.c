@@ -28,7 +28,7 @@ struct config cfg = {
 	60,
 	10,
 	300,
-	100,
+	80,
 	10,
 	20,
 	255, 255, 255,
@@ -68,11 +68,8 @@ struct button restart_button;
 struct button button_4x4;
 struct button button_5x5;
 struct button button_6x6;
-struct button start;
 struct button back;
 struct button mute;
-struct button yes;
-struct button no;
 
 struct button* ui_buttons[2] = { 
 	&menu_button,

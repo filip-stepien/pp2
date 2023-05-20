@@ -158,6 +158,7 @@ struct button {
     int bottom_y;
     int img_padding;
     ALLEGRO_COLOR bg_color;
+    bool visible;
     void (*on_click)();
 };
 
@@ -166,11 +167,8 @@ extern struct button restart_button;
 extern struct button button_4x4;
 extern struct button button_5x5;
 extern struct button button_6x6;
-extern struct button start;
 extern struct button back;
 extern struct button mute;
-extern struct button yes;
-extern struct button no;
 
 extern struct button* ui_buttons[2];
 extern int ui_buttons_length;
