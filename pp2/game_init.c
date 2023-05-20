@@ -3,6 +3,7 @@
 #include "game_includes.h"
 #include "game_init.h"
 #include "game_structures.h"
+#include "board_operations.h"
 
 // funkcja inicjuj¹ca planszê gry
 void initialize_board()
@@ -201,10 +202,59 @@ void initialize_menu_button(int render_x, int render_y, char* img_name)
 
 }
 
-void debug_handler()
+void start_new_game()
+{
+	initialize_board();
+
+	cfg.points_width -= (cfg.board_x_size - 4) * (board.node_size / 16);
+	cfg.best_points_width -= (cfg.board_x_size - 4) * (board.node_size / 16);
+
+	int center_x = (cfg.width - (board.node_size * board.x_size) - (board.gap * (board.x_size - 1))) / 2;
+	int best_points_x = center_x + cfg.points_width + board.gap;
+	int points_center_y = (cfg.height - cfg.points_height - (board.gap * (board.y_size + 1)) - (board.node_size * board.y_size)) / 2;
+	int board_center_y = points_center_y + cfg.points_height + board.gap;
+	int restart_button_x = best_points_x + cfg.best_points_width + board.gap;
+	int menu_button_x = restart_button_x + cfg.restart_button_width + board.gap;
+	int restart_button_y = points_center_y + cfg.best_points_height - cfg.restart_button_height;
+	int menu_button_y = points_center_y + cfg.best_points_height - cfg.menu_button_height;
+
+	initialize_points(center_x, points_center_y);             // inicjalizacja licznika punktów
+	initialize_best_points(best_points_x, points_center_y);
+	initialize_nodes(center_x, board_center_y);               // inicjalizacja klocków
+	initialize_restart_button(restart_button_x, restart_button_y, cfg.restart_button_filename);
+	initialize_menu_button(menu_button_x, menu_button_y, cfg.menu_button_filename);
+
+	srand(time(NULL));
+	generate_random_node();     // generowanie losowego klocka
+
+	animations.frame = 0;
+}
+
+void common_option_handler()
 {
 	menu.visible = false;
 	game.current_popup = NULL;
+	game.started = true;
+
+	start_new_game();
+}
+
+void option_4x4_hanlder()
+{
+	cfg.board_x_size = cfg.board_y_size = 4;
+	common_option_handler();
+}
+
+void option_5x5_hanlder()
+{
+	cfg.board_x_size = cfg.board_y_size = 5;
+	common_option_handler();
+}
+
+void option_6x6_hanlder()
+{
+	cfg.board_x_size = cfg.board_y_size = 6;
+	common_option_handler();
 }
 
 void initialize_menu_option_buttons(int render_x, int render_y)
@@ -213,7 +263,9 @@ void initialize_menu_option_buttons(int render_x, int render_y)
 	button_4x4.width = button_5x5.width = button_6x6.width = cfg.option_width;
 	button_4x4.height = button_5x5.height = button_6x6.height = cfg.option_height;
 	button_4x4.img_padding = button_5x5.img_padding = button_6x6.img_padding = 0;
-	button_4x4.on_click = button_5x5.on_click = button_6x6.on_click = debug_handler;
+	button_4x4.on_click = option_4x4_hanlder;
+	button_5x5.on_click = option_5x5_hanlder;
+	button_6x6.on_click = option_6x6_hanlder;
 	button_4x4.bg_color = button_5x5.bg_color = button_6x6.bg_color = al_map_rgb(
 		cfg.option_text_color_r, 
 		cfg.option_text_color_g, 

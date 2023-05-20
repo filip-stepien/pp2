@@ -32,6 +32,7 @@ int game_init(struct game_window* game, struct config cfg)
     game->option_font = al_load_font(cfg.font_name, cfg.option_font_size, 0);
     game->timer = al_create_timer(1.0 / (double)cfg.fps); // klatka co 1/30 sekundy = 30 klatek na sekundę
     game->current_popup = NULL;
+    game->started = false;
 
     // generacja kodów błędów, jeżeli któraś zmienna nie została zainicjowana poprawnie
     if (!game->game_initialized) return 100;
@@ -118,33 +119,11 @@ int main()
 
     al_start_timer(game.timer); // start licznika gry
 
-    initialize_board();
-
-    cfg.points_width -= (cfg.board_x_size - 4) * (board.node_size / 16);
-    cfg.best_points_width -= (cfg.board_x_size - 4) * (board.node_size / 16);
-    
-    int center_x = (cfg.width - (board.node_size * board.x_size) - (board.gap * (board.x_size - 1))) / 2;
-    int best_points_x = center_x + cfg.points_width + board.gap;
-    int points_center_y = (cfg.height - cfg.points_height - (board.gap * (board.y_size + 1)) - (board.node_size * board.y_size)) / 2;
-    int board_center_y = points_center_y + cfg.points_height + board.gap;
-    int restart_button_x = best_points_x + cfg.best_points_width + board.gap;
-    int menu_button_x = restart_button_x + cfg.restart_button_width + board.gap;
-    int restart_button_y = points_center_y + cfg.best_points_height - cfg.restart_button_height;
-    int menu_button_y = points_center_y + cfg.best_points_height - cfg.menu_button_height;
     int option_center_x = (cfg.width - cfg.option_width) / 2;
     int option_start_y = 300;
 
-    initialize_points(center_x, points_center_y);             // inicjalizacja licznika punktów
-    initialize_best_points(best_points_x, points_center_y);
-    initialize_nodes(center_x, board_center_y);               // inicjalizacja klocków
-    initialize_restart_button(restart_button_x, restart_button_y, "restart_button.png");
-    initialize_menu_button(menu_button_x, menu_button_y, "menu_button.png");
-
     initialize_menu_option_buttons(option_center_x, option_start_y);
     initialize_menu_popup();
-
-    srand(time(NULL));
-    generate_random_node();     // generowanie losowego klocka
 
     // główna pętla gry
     bool running = true;    // zmienna sterująca działaniem głównej pętli gry
@@ -157,19 +136,19 @@ int main()
         {
             case ALLEGRO_EVENT_TIMER:
                 clear();
-                draw_board();
-                draw_points();
-                draw_best_points();
 
-                draw_restart_button();
-                draw_menu_button();
+                if (game.started)
+                {
+                    draw_board();
+                    draw_points();
+                    draw_best_points();
+                    draw_restart_button();
+                    draw_menu_button();
+                    slide_animate_nodes(animations.frame);
+                    grow_animate_nodes(animations.frame);
+                }
 
-                slide_animate_nodes(animations.frame);
-
-                grow_animate_nodes(animations.frame);
-
-                if(menu.visible)
-                draw_menu_popup();
+                if(menu.visible) draw_menu_popup();
 
                 handle_mouse_clicks(animations.frame);
 

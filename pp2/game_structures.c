@@ -7,14 +7,17 @@ struct config cfg = {
 	600,			// szerokoœæ okna
 	800,			// wysokoœæ okna
 	"Arial.ttf",
+	"restart_button.png",
+	"menu_button.png",
+	"mute_button.png",
 	24,				// wielkoœæ czcionki
 	100,
 	40,
 	20,				// wielkoœæ czcionki liczników punktów
 	10,				// interlinia liczników punktów
 	60,				// fps
-	4,				// maksymalna iloœæ klocków na osi X
-	4,				// maksymalna iloœæ klocków na osi Y
+	6,				// maksymalna iloœæ klocków na osi X
+	6,				// maksymalna iloœæ klocków na osi Y
 	100,			// wielkoœæ klocka (px)
 	10,				// wielkoœæ przerwy miêdzy klockami (10px)
 	200,			// szerokoœæ licznika punktów

@@ -10,6 +10,9 @@ struct config {
     int width;                              // szerokoœæ okna gry
     int height;                             // wysokoœæ okna gry
     char* font_name;
+    char* restart_button_filename;
+    char* menu_button_filename;
+    char* mute_button_filename;
     int font_size;                          // wielkoœæ czcionki
     int title_font_size;
     int option_font_size;
@@ -83,6 +86,7 @@ struct config {
 
 extern struct config cfg;
 
+
 // struktura zawieraj¹ca g³ówne zmienne okna gry
 struct game_window {
     bool game_initialized;                      // czy gra zosta³a zainicjowana poprawnie
@@ -92,6 +96,7 @@ struct game_window {
     bool ttf_addon_initialized;                 // czy modu³ z plikami .ttf zosta³ zainicjowany
     bool image_addon_initialized;
     bool mouse_initialized;
+    bool started;
     ALLEGRO_DISPLAY* display;                   // okno gry
     ALLEGRO_EVENT_QUEUE* queue;                 // kolejka gry
     ALLEGRO_FONT* font;                         // czcionka okna

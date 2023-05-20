@@ -9,4 +9,4 @@ void initialize_restart_button(int render_x, int render_y, char* img_name);
 void initialize_menu_button(int render_x, int render_y, char* img_name);
 void initialize_menu_option_buttons(int render_x, int render_y);
 void initialize_menu_popup();
-void initialize_yesno_popup(int render_x, int render_y);
+void start_new_game();
