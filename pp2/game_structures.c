@@ -10,6 +10,13 @@ struct config cfg = {
 	"restart_button.png",
 	"menu_button.png",
 	{ "mute_button_on.png", "mute_button_off.png"},
+	"music.wav",
+	{ "slide1.wav", "slide2.wav", "slide3.wav" },
+	{ "grow1.wav", "grow2.wav", "grow3.wav" },
+	3, 
+	3,
+	0.2,
+	0.1,
 	24,				// wielkoœæ czcionki
 	100,
 	40,
@@ -33,6 +40,10 @@ struct config cfg = {
 	20,
 	50,
 	50,
+	560,
+	280,
+	20,
+	70, 70, 70, 130,
 	255, 255, 255,
 	255, 255, 255,
 	255, 255, 255,
@@ -47,6 +58,9 @@ struct config cfg = {
 	50, 50, 50,		// kolor tekstu klocka (r, g, b)
 	50, 50, 50,
 	50, 50, 50,
+	50, 50, 50,
+	255, 255, 255,
+	50, 50, 50,
 	2,				// minimalna wartoœæ dla której obliczany jest gradient koloru
 	2048,			// maksymalna wartoœæ dla której obliczany jest gradient koloru
 	250, 250, 0,	// wartoœæ minimalna gradientu (r, g, b)
@@ -58,13 +72,14 @@ struct config cfg = {
 	255, 230, 208
 };
 
+struct sounds sounds;
 struct game_window game;
 struct game_board board;
 struct game_points points;
 struct game_points best_points;
 struct game_animations animations;
 struct popup menu;
-struct popup yesno;
+struct popup end;
 
 struct button menu_button;
 struct button restart_button;
@@ -73,6 +88,7 @@ struct button button_5x5;
 struct button button_6x6;
 struct button back;
 struct button mute;
+struct button new_game;
 
 struct button* ui_buttons[3] = { 
 	&menu_button,

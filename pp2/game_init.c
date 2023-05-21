@@ -4,6 +4,36 @@
 #include "game_init.h"
 #include "game_structures.h"
 #include "board_operations.h"
+#include "game_music.h"
+
+void initialize_sounds()
+{
+	al_reserve_samples(cfg.click_sounds_length + cfg.grow_sounds_length + 1);
+	ALLEGRO_SAMPLE* music_sample = al_load_sample(cfg.music_filename);
+
+	sounds.click_sounds = (ALLEGRO_SAMPLE_INSTANCE**)calloc(cfg.click_sounds_length, sizeof(ALLEGRO_SAMPLE_INSTANCE*));
+	sounds.grow_sounds = (ALLEGRO_SAMPLE_INSTANCE**)calloc(cfg.grow_sounds_length, sizeof(ALLEGRO_SAMPLE_INSTANCE*));
+
+	for (int i = 0; i < cfg.click_sounds_length; i++)
+	{
+		ALLEGRO_SAMPLE* sound_sample = al_load_sample(cfg.click_sounds_filenames[i]);
+		sounds.click_sounds[i] = al_create_sample_instance(sound_sample);
+		al_attach_sample_instance_to_mixer(sounds.click_sounds[i], al_get_default_mixer());
+		al_set_sample_instance_gain(sounds.click_sounds[i], cfg.sfx_volume);
+	}
+
+	for (int i = 0; i < cfg.grow_sounds_length; i++)
+	{
+		ALLEGRO_SAMPLE* sound_sample = al_load_sample(cfg.grow_sounds_filenames[i]);
+		sounds.grow_sounds[i] = al_create_sample_instance(sound_sample);
+		al_attach_sample_instance_to_mixer(sounds.grow_sounds[i], al_get_default_mixer());
+		al_set_sample_instance_gain(sounds.grow_sounds[i], cfg.sfx_volume);
+	}
+
+	sounds.music = al_create_sample_instance(music_sample);
+	al_attach_sample_instance_to_mixer(sounds.music, al_get_default_mixer());
+	al_set_sample_instance_gain(sounds.music, cfg.music_volume);
+}
 
 // funkcja inicjuj¹ca planszê gry
 void initialize_board()
@@ -227,6 +257,57 @@ void start_new_game()
 	animations.frame = 0;
 }
 
+void end_button_handler()
+{
+	restart_button_handler();
+	game.current_popup = NULL;
+	end.visible = false;
+}
+
+void initialize_end_button(int render_x, int render_y)
+{
+	new_game.img = NULL;
+	new_game.width = cfg.option_width;
+	new_game.height = cfg.option_height;
+	new_game.top_x = render_x;
+	new_game.top_y = render_y;
+	new_game.bottom_x = render_x + cfg.option_width;
+	new_game.bottom_y = render_y + cfg.option_height;
+	new_game.img_padding = 0;
+	new_game.visible = true;
+	new_game.on_click = end_button_handler;
+	new_game.bg_color = al_map_rgb(
+		cfg.option_bg_color_r,
+		cfg.option_bg_color_g,
+		cfg.option_bg_color_b
+	);
+}
+
+void initialize_end_popup()
+{
+	int center_x = (cfg.width - cfg.end_popup_width) / 2;
+	int center_y = (cfg.height - cfg.end_popup_height) / 2;
+
+	end.width = cfg.end_popup_width;
+	end.height = cfg.end_popup_height;
+	end.top_x = center_x;
+	end.top_y = center_y;
+	end.bottom_x = center_x + cfg.end_popup_width;
+	end.bottom_y = center_y + cfg.end_popup_height;
+	end.visible = false;
+	end.bg_color = al_map_rgba(
+		cfg.end_bg_color_r,
+		cfg.end_bg_color_g,
+		cfg.end_bg_color_b,
+		cfg.end_bg_color_a
+	);
+
+	end.buttons_length = 1;
+	end.buttons = (struct button**)calloc(end.buttons_length, sizeof(struct button*));
+
+	end.buttons[0] = &new_game;
+}
+
 void common_option_handler()
 {
 	menu.visible = false;
@@ -268,11 +349,13 @@ void mute_button_handler()
 	{
 		mute.img = al_load_bitmap(cfg.mute_button_filenames[0]);
 		game.muted = false;
+		unmute_game();
 	}
 	else
 	{
 		mute.img = al_load_bitmap(cfg.mute_button_filenames[1]);
 		game.muted = true;
+		mute_game();
 	}
 }
 

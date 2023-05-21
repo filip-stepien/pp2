@@ -82,6 +82,8 @@
     <Allegro_AddonFont>true</Allegro_AddonFont>
     <Allegro_AddonPrimitives>true</Allegro_AddonPrimitives>
     <Allegro_AddonTTF>true</Allegro_AddonTTF>
+    <Allegro_AddonAudio>true</Allegro_AddonAudio>
+    <Allegro_AddonAcodec>true</Allegro_AddonAcodec>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -148,6 +150,7 @@
     <ClCompile Include="board_operations.c" />
     <ClCompile Include="board_utils.c" />
     <ClCompile Include="game_init.c" />
+    <ClCompile Include="game_music.c" />
     <ClCompile Include="game_renders.c" />
     <ClCompile Include="game_structures.c" />
     <ClCompile Include="main.c" />
@@ -162,6 +165,7 @@
     <ClInclude Include="board_utils.h" />
     <ClInclude Include="game_includes.h" />
     <ClInclude Include="game_init.h" />
+    <ClInclude Include="game_music.h" />
     <ClInclude Include="game_renders.h" />
     <ClInclude Include="game_structures.h" />
   </ItemGroup>

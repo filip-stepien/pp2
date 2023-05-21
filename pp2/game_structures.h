@@ -13,6 +13,13 @@ struct config {
     char* restart_button_filename;
     char* menu_button_filename;
     char* mute_button_filenames[2];
+    char* music_filename;
+    char* click_sounds_filenames[3];
+    char* grow_sounds_filenames[3];
+    int click_sounds_length;
+    int grow_sounds_length;
+    float music_volume;
+    float sfx_volume;
     int font_size;                          // wielkoœæ czcionki
     int title_font_size;
     int option_font_size;
@@ -36,6 +43,13 @@ struct config {
     int option_gap;
     int mute_button_width;
     int mute_button_height;
+    int end_popup_width;
+    int end_popup_height;
+    int end_popup_padding;
+    unsigned char end_bg_color_r;
+    unsigned char end_bg_color_g;
+    unsigned char end_bg_color_b;
+    unsigned char end_bg_color_a;
     unsigned char mute_button_bg_color_r;
     unsigned char mute_button_bg_color_g;
     unsigned char mute_button_bg_color_b;
@@ -72,6 +86,15 @@ struct config {
     unsigned char option_text_color_r;
     unsigned char option_text_color_g;
     unsigned char option_text_color_b;
+    unsigned char end_title_color_r;
+    unsigned char end_title_color_g;
+    unsigned char end_title_color_b;
+    unsigned char end_button_text_color_r;
+    unsigned char end_button_text_color_g;
+    unsigned char end_button_text_color_b;
+    unsigned char end_button_bg_color_r;
+    unsigned char end_button_bg_color_g;
+    unsigned char end_button_bg_color_b;
     int node_min_interpolation;             // minimalna wartoœæ dla której obliczany jest gradient koloru
     int node_max_interpolation;             // maksymalna wartoœæ dla której obliczany jest gradient koloru
     unsigned char node_min_color_r;         // wartoœæ minimalna gradientu (r)
@@ -91,6 +114,15 @@ struct config {
 
 extern struct config cfg;
 
+struct sounds {
+    ALLEGRO_SAMPLE_INSTANCE* music;
+    ALLEGRO_SAMPLE_INSTANCE** click_sounds;
+    ALLEGRO_SAMPLE_INSTANCE** grow_sounds;
+    int last_grow_sound;
+    int last_click_sound;
+};
+
+extern struct sounds sounds;
 
 // struktura zawieraj¹ca g³ówne zmienne okna gry
 struct game_window {
@@ -100,6 +132,8 @@ struct game_window {
     bool font_addon_initialized;                // czy modu³ z czcionk¹ zosta³ zainicjowany
     bool ttf_addon_initialized;                 // czy modu³ z plikami .ttf zosta³ zainicjowany
     bool image_addon_initialized;
+    bool audio_addon_initialized;
+    bool acodec_addon_initialized;
     bool mouse_initialized;
     bool started;
     bool muted;
@@ -175,6 +209,7 @@ extern struct button button_5x5;
 extern struct button button_6x6;
 extern struct button back;
 extern struct button mute;
+extern struct button new_game;
 
 extern struct button* ui_buttons[3];
 extern int ui_buttons_length;
@@ -193,7 +228,7 @@ struct popup {
 };
 
 extern struct popup menu;
-extern struct popup yesno;
+extern struct popup end;
 
 enum LAST_MOVE { NONE, LEFT, RIGHT, UP, DOWN };
 

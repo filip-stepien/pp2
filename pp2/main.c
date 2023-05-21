@@ -7,6 +7,7 @@
 #include "board_utils.h"
 #include "game_includes.h"
 #include "board_animations.h"
+#include "game_music.h"
 /**/
 
 #include <stdio.h>
@@ -24,6 +25,8 @@ int game_init(struct game_window* game, struct config cfg)
     game->ttf_addon_initialized = al_init_ttf_addon();
     game->image_addon_initialized = al_init_image_addon();
     game->mouse_initialized = al_install_mouse();
+    game->audio_addon_initialized = al_install_audio();
+    game->acodec_addon_initialized = al_init_acodec_addon();
     game->display = al_create_display(cfg.width, cfg.height);
     game->queue = al_create_event_queue();
     game->font = al_load_font(cfg.font_name, cfg.font_size, 0);
@@ -70,6 +73,16 @@ void game_cleanup(struct game_window* game)
     free(menu.buttons);
     menu.buttons = NULL;
     menu.buttons_length = 0;
+
+    free(end.buttons);
+    end.buttons = NULL;
+    end.buttons_length = 0;
+
+    free(sounds.click_sounds);
+    sounds.click_sounds = NULL;
+
+    free(sounds.grow_sounds);
+    sounds.grow_sounds = NULL;
 
     al_destroy_font(game->font);            // usuwanie czcionki
     al_destroy_display(game->display);      // usuwanie okna
@@ -138,12 +151,19 @@ int main()
     int option_center_x = (cfg.width - cfg.option_width) / 2;
     int option_start_y = 300;
     int mute_button_left_x = cfg.width - cfg.mute_button_width;
+    int end_option_start_y = 430;
+
+    initialize_sounds();
+    play_music();
 
     initialize_menu_option_buttons(option_center_x, option_start_y);
     initialize_menu_popup();
 
-    initialize_mute_button(mute_button_left_x, 0);
+    initialize_end_button(option_center_x, end_option_start_y);
+    initialize_end_popup();
 
+    initialize_mute_button(mute_button_left_x, 0);
+    
     // główna pętla gry
     bool running = true;    // zmienna sterująca działaniem głównej pętli gry
     ALLEGRO_EVENT event;    // zmienna w której znajdzie się przechwycony event 
@@ -167,7 +187,9 @@ int main()
                     grow_animate_nodes(animations.frame);
                 }
 
-                if(menu.visible) draw_menu_popup();
+                if (menu.visible) draw_menu_popup();
+
+                if (end.visible) draw_end_popup();
 
                 draw_mute_button();
 
@@ -234,16 +256,6 @@ int main()
                         get_nodes_to_slide_animate_left_to_right();
                         break;
 
-                    case ALLEGRO_KEY_R:         // przycisk - r
-                        reset_board();
-                        clear_slide_animation_array();
-                        clear_grow_animation_array();
-                        generate_random_node();
-                        color_nodes();
-                        animations.frame = 0;
-
-                        break;
-
                     case ALLEGRO_KEY_ESCAPE:    // przycisk - esc
                         running = false;        // przerwanie pętli
                         break;
@@ -258,8 +270,11 @@ int main()
                     animations.done_sliding = false;
                     animations.on_cooldown = true;
 
-                    if (did_game_end())     // jeżeli gra się zakończyła
-                        puts("Koniec! Wciśnij klawisz R aby zrestartowac gre.");   // komunikat o końcu gry
+                    if (did_game_end())
+                    {
+                        game.current_popup = &end;
+                        end.visible = true;
+                    }
                 }
                 break;
 

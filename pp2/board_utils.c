@@ -3,6 +3,7 @@
 #include "game_includes.h"
 #include "game_structures.h"
 #include "board_utils.h"
+#include "game_music.h"
 
 // funkcja sprawdzaj¹ca czy na planszy nast¹pi³ ruch
 bool did_board_change()
@@ -59,7 +60,11 @@ void handle_mouse_clicks()
 	{
 		for (int i = 0; i < ui_buttons_length; i++)
 		{
-			if (state.x >= ui_buttons[i]->top_x && state.x <= ui_buttons[i]->bottom_x && state.y >= ui_buttons[i]->top_y && state.y <= ui_buttons[i]->bottom_y)
+			if (state.x >= ui_buttons[i]->top_x && 
+				state.x <= ui_buttons[i]->bottom_x && 
+				state.y >= ui_buttons[i]->top_y && 
+				state.y <= ui_buttons[i]->bottom_y &&
+				ui_buttons[i]->visible)
 			{
 				al_draw_filled_rounded_rectangle(
 					ui_buttons[i]->top_x,
@@ -83,7 +88,10 @@ void handle_mouse_clicks()
 					);
 
 					if (!animations.click_cooldown)
-					ui_buttons[i]->on_click();
+					{
+						ui_buttons[i]->on_click();
+						play_click_sound();
+					}
 				}
 				break;
 			}
@@ -96,7 +104,8 @@ void handle_mouse_clicks()
 			if (state.x >= game.current_popup->buttons[i]->top_x && 
 				state.x <= game.current_popup->buttons[i]->bottom_x && 
 				state.y >= game.current_popup->buttons[i]->top_y &&
-				state.y <= game.current_popup->buttons[i]->bottom_y) 
+				state.y <= game.current_popup->buttons[i]->bottom_y &&
+				game.current_popup->buttons[i]->visible)
 			{
 				al_draw_filled_rounded_rectangle(
 					game.current_popup->buttons[i]->top_x,
@@ -120,7 +129,10 @@ void handle_mouse_clicks()
 					);
 
 					if (!animations.click_cooldown)
-					game.current_popup->buttons[i]->on_click();
+					{
+						game.current_popup->buttons[i]->on_click();
+						play_click_sound();
+					}
 				}
 				break;
 			}
