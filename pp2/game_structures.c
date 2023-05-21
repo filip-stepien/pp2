@@ -33,7 +33,7 @@ struct config cfg = {
 	100,			// wysokoœæ licznika najlepszego wyniku
 	60,
 	60,
-	10,
+	6,
 	300,
 	80,
 	10,
@@ -44,12 +44,12 @@ struct config cfg = {
 	280,
 	20,
 	70, 70, 70, 130,
-	255, 255, 255,
+	255, 230, 208,
 	255, 255, 255,
 	255, 255, 255,
 	60,
 	60,
-	10,
+	6,
 	255, 255, 255,
 	255, 230, 208,		// kolor t³a (r, g, b)
 	255, 255, 255,	// kolor t³a licznika (r, g, b)
