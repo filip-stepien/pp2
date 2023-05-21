@@ -2,6 +2,7 @@
 #include "game_structures.h"
 #include "board_utils.h"
 #include "board_animations.h"
+#include "game_music.h"
 
 #include <time.h>
 #include <math.h>
@@ -39,6 +40,8 @@ void generate_random_node()
 
 			color_nodes();
 			push_to_grow_animation_array(board.board_array[col][row]);
+
+			play_grow_sound();
 		}
 	}
 }
