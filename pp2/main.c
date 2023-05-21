@@ -150,7 +150,8 @@ int main()
 
     int option_center_x = (cfg.width - cfg.option_width) / 2;
     int option_start_y = 300;
-    int mute_button_left_x = cfg.width - cfg.mute_button_width;
+    int mute_button_right_x = cfg.width - cfg.mute_button_width;
+    int mute_button_end_y = cfg.height - cfg.mute_button_height;
     int end_option_start_y = 430;
 
     initialize_sounds();
@@ -162,7 +163,7 @@ int main()
     initialize_end_button(option_center_x, end_option_start_y);
     initialize_end_popup();
 
-    initialize_mute_button(mute_button_left_x, 0);
+    initialize_mute_button(mute_button_right_x, mute_button_end_y);
     
     // główna pętla gry
     bool running = true;    // zmienna sterująca działaniem głównej pętli gry
