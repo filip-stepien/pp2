@@ -59,16 +59,7 @@ int game_init(struct game_window* game, struct config cfg)
 // funkcja sprzątająca zainicjalizowane elementy gry
 void game_cleanup(struct game_window* game)
 {
-    if (best_points.counter == points.counter && points.counter > 0)
-    {
-        FILE* save_file = NULL;
-        fopen_s(&save_file, "score.txt", "w");
-        if (save_file != NULL)
-        {
-            fprintf_s(save_file, "%d", best_points.counter);
-            fclose(save_file);
-        }
-    }
+    save_best_score();
 
     free(menu.buttons);
     menu.buttons = NULL;
