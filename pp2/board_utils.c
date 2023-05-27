@@ -50,6 +50,20 @@ void compare_and_set_best_score()
 	}
 }
 
+void save_best_score()
+{
+	if (best_points.counter == points.counter && points.counter > 0)
+	{
+		FILE* save_file = NULL;
+		fopen_s(&save_file, "score.txt", "w");
+		if (save_file != NULL)
+		{
+			fprintf_s(save_file, "%d", best_points.counter);
+			fclose(save_file);
+		}
+	}
+}
+
 void handle_mouse_clicks()
 {
 	ALLEGRO_MOUSE_STATE state;

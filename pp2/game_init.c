@@ -5,6 +5,7 @@
 #include "game_structures.h"
 #include "board_operations.h"
 #include "game_music.h"
+#include "board_utils.h"
 
 void initialize_sounds()
 {
@@ -177,6 +178,7 @@ void restart_button_handler()
 	animations.click_frame = 0;
 	animations.click_cooldown = true;
 	animations.frame = 0;
+	save_best_score();
 	reset_board();
 	clear_slide_animation_array();
 	clear_grow_animation_array();
@@ -230,6 +232,7 @@ void initialize_menu_button(int render_x, int render_y, char* img_name)
 
 void start_new_game()
 {
+	save_best_score();
 	board_cleanup();
 	initialize_board();
 
