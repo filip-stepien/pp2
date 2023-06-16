@@ -1,11 +1,15 @@
-// Plik zawieraj¹cy deklaracjê struktur zdefiniowanych w game_data.h
+ï»¿/**
+ * @file game_structures.c
+ * @brief Podstawowe struktury gry
+ */
 
 #include "game_includes.h"
 #include "game_structures.h"
 
+ //! Konfiguracja gry
 struct config cfg = { 
-	600,			// szerokoœæ okna
-	800,			// wysokoœæ okna
+	600,
+	800,
 	"Arial.ttf",
 	"restart_button.png",
 	"menu_button.png",
@@ -17,20 +21,20 @@ struct config cfg = {
 	3,
 	0.2,
 	0.1,
-	24,				// wielkoœæ czcionki
+	24,				
 	100,
 	40,
-	20,				// wielkoœæ czcionki liczników punktów
-	10,				// interlinia liczników punktów
-	60,				// fps
-	4,				// maksymalna iloœæ klocków na osi X
-	4,				// maksymalna iloœæ klocków na osi Y
-	100,			// wielkoœæ klocka (px)
-	10,				// wielkoœæ przerwy miêdzy klockami (10px)
-	200,			// szerokoœæ licznika punktów
-	100,			// wysokoœæ licznika punktów
-	200,			// szerokoœæ licznika najlepszego wyniku
-	100,			// wysokoœæ licznika najlepszego wyniku
+	20,				
+	10,				
+	60,				
+	4,				
+	4,				
+	100,			
+	10,				
+	200,			
+	100,			
+	200,			
+	100,			
 	60,
 	60,
 	6,
@@ -51,48 +55,81 @@ struct config cfg = {
 	60,
 	6,
 	255, 255, 255,
-	255, 230, 208,		// kolor t³a (r, g, b)
-	255, 255, 255,	// kolor t³a licznika (r, g, b)
-	255, 255, 255,		// kolor klocka bez wartoœci (r, g, b)
-	50, 50, 50,		// kolor tekstu licznika (r, g, b)
-	50, 50, 50,		// kolor tekstu klocka (r, g, b)
+	255, 230, 208,		
+	255, 255, 255,	
+	255, 255, 255,		
+	50, 50, 50,		
+	50, 50, 50,		
 	50, 50, 50,
 	50, 50, 50,
 	50, 50, 50,
 	255, 255, 255,
 	50, 50, 50,
-	2,				// minimalna wartoœæ dla której obliczany jest gradient koloru
-	2048,			// maksymalna wartoœæ dla której obliczany jest gradient koloru
-	250, 250, 0,	// wartoœæ minimalna gradientu (r, g, b)
-	255, 0 , 120,	// wartoœæ maksymalna gradientu (r, g, b)
-	16,				// d³ugoœæ animacjki tworzenia klocka (klatki)
-	50,				// szybkoœæ animacji przesuwania klocków (klatki/s)
+	2,				
+	2048,			
+	250, 250, 0,	
+	255, 0 , 120,	
+	16,				
+	50,				
 	10,
 	30,
 	255, 230, 208
 };
 
+//! DÅºwiÄ™ki
 struct sounds sounds;
+
+//! Zmienne gry
 struct game_window game;
+
+//! Plansza
 struct game_board board;
+
+//! Wynik
 struct game_points points;
+
+//! Najlepszy wynik
 struct game_points best_points;
+
+//! Animacje
 struct game_animations animations;
+
+//! Okno menu
 struct popup menu;
+
+//! Okno koÅ„ca gry
 struct popup end;
 
+//! Przycisk menu
 struct button menu_button;
+
+//! Przycisk restart
 struct button restart_button;
+
+//! Przycisk planszy 4x4
 struct button button_4x4;
+
+//! Przycisk planszy 5x5
 struct button button_5x5;
+
+//! Przycisk planszy 6x6
 struct button button_6x6;
+
+//! Przycisk powrotu
 struct button back;
+
+//! Przycisk wyciszenia dÅºwiÄ™kÃ³w
 struct button mute;
+
+//! Przycisk nowej gry
 struct button new_game;
 
+//! Przyciski interfejsu
 struct button* ui_buttons[3] = { 
 	&menu_button,
 	&restart_button,
 	&mute
 };
+
+//! IloÅ›Ä‡ przyciskÃ³w interfejsu
 int ui_buttons_length = 3;

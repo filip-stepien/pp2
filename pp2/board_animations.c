@@ -1,19 +1,36 @@
+﻿/**
+ * @file board_animations.c
+ * @brief Animacje gry
+ */
+
 #include "board_animations.h"
 #include "game_structures.h"
 
 #include <stdio.h>
 
+/**
+ * @brief Dodanie klocka do tablicy klocków wymagających wykonania animacji rozszerzenia
+ * @param curent_node klocek
+ */
 void push_to_grow_animation_array(struct node current_node) {
 	animations.grow_animation_array[animations.grow_animation_idx] = current_node;
 	animations.grow_animation_idx++;
 }
 
+/**
+ * @brief Wyczyszczenie tablicy klocków wymagających wykonania animacji rozszerzenia
+ */
 void clear_grow_animation_array()
 {
 	memset(animations.grow_animation_array, 0, board.total_size * sizeof(struct node));
 	animations.grow_animation_idx = 0;
 }
 
+/**
+ * @brief Wykonanie animacji rozszerzenia na klocku
+ * @param curent_node klocek
+ * @param current_frame klatka gry
+ */
 void grow_animation(struct node current_node, int current_frame)
 {
 	int step = current_frame;
@@ -31,9 +48,8 @@ void grow_animation(struct node current_node, int current_frame)
 		current_node.color
 	);
 
-	if (current_node.value)	// je�eli warto�� klocka != 0
+	if (current_node.value)
 	{
-		// rysowanie warto�ci wewn�trz klocka
 		al_draw_textf(
 			game.font,
 			al_map_rgb(0, 0, 0),
@@ -46,6 +62,10 @@ void grow_animation(struct node current_node, int current_frame)
 	}
 }
 
+/**
+ * @brief Wykonanie animacji rozszerzenia na wszystkich wymagających tego klockach
+ * @param frame klatka gry
+ */
 void grow_animate_nodes(int frame) {
 	for (int i = 0; i < board.total_size; i++) {
 		if (animations.grow_animation_array[i].top_x != 0 && animations.grow_animation_array[i].top_y != 0) {
@@ -54,10 +74,19 @@ void grow_animate_nodes(int frame) {
 	}
 }
 
+/**
+ * @brief Wyczyszczenie tablicy klocków wymagających wykonania animacji przesunięcia
+ */
 void clear_slide_animation_array() {
 	memset(animations.slide_animation_array, 0, board.total_size * sizeof(struct node));
 }
 
+/**
+ * @brief Wykonanie animacji przesunięcia na klocku (od lewej do prawej)
+ * @param from klocek, od którego ma wykonać się przesunięcie
+ * @param to klocek docelowy
+ * @param current_frame klatka gry
+ */
 void slide_animation_left_to_right(struct node from, struct node to, int current_frame)
 {
 	int step = (current_frame + 1) * cfg.slide_animation_speed;
@@ -118,6 +147,12 @@ void slide_animation_left_to_right(struct node from, struct node to, int current
 	}
 }
 
+/**
+ * @brief Wykonanie animacji przesunięcia na klocku (od prawej do lewej)
+ * @param from klocek, od którego ma wykonać się przesunięcie
+ * @param to klocek docelowy
+ * @param current_frame klatka gry
+ */
 void slide_animation_right_to_left(struct node from, struct node to, int current_frame)
 {
 	int step = (current_frame + 1) * cfg.slide_animation_speed;
@@ -178,6 +213,12 @@ void slide_animation_right_to_left(struct node from, struct node to, int current
 	}
 }
 
+/**
+ * @brief Wykonanie animacji przesunięcia na klocku (z dołu na górę)
+ * @param from klocek, od którego ma wykonać się przesunięcie
+ * @param to klocek docelowy
+ * @param current_frame klatka gry
+ */
 void slide_animation_down_to_up(struct node from, struct node to, int current_frame)
 {
 	int step = (current_frame + 1) * cfg.slide_animation_speed;
@@ -237,6 +278,12 @@ void slide_animation_down_to_up(struct node from, struct node to, int current_fr
 	}
 }
 
+/**
+ * @brief Wykonanie animacji przesunięcia na klocku (z góry na dół)
+ * @param from klocek, od którego ma wykonać się przesunięcie
+ * @param to klocek docelowy
+ * @param current_frame klatka gry
+ */
 void slide_animation_up_to_down(struct node from, struct node to, int current_frame)
 {
 	int step = (current_frame + 1) * cfg.slide_animation_speed;
@@ -297,6 +344,9 @@ void slide_animation_up_to_down(struct node from, struct node to, int current_fr
 	}
 }
 
+/**
+ * @brief Uzupełnienie tablicy animacji przesunięcia (dla ruchu od lewej do prawej)
+ */
 void get_nodes_to_slide_animate_left_to_right() 
 {
 	int idx = 0;
@@ -324,6 +374,9 @@ void get_nodes_to_slide_animate_left_to_right()
 	}
 }
 
+/**
+ * @brief Uzupełnienie tablicy animacji przesunięcia (dla ruchu od prawej do lewej)
+ */
 void get_nodes_to_slide_animate_right_to_left() 
 {
 	int idx = 0;
@@ -351,6 +404,9 @@ void get_nodes_to_slide_animate_right_to_left()
 	}
 }
 
+/**
+ * @brief Uzupełnienie tablicy animacji przesunięcia (dla ruchu z góry na dół)
+ */
 void get_nodes_to_slide_animate_up_to_down()
 {
 	int idx = 0;
@@ -378,6 +434,9 @@ void get_nodes_to_slide_animate_up_to_down()
 	}
 }
 
+/**
+ * @brief Uzupełnienie tablicy animacji przesunięcia (dla ruchu z dołu na górę)
+ */
 void get_nodes_to_slide_animate_down_to_up()
 {
 	int idx = 0;
@@ -405,6 +464,11 @@ void get_nodes_to_slide_animate_down_to_up()
 	}
 }
 
+/**
+ * @brief Uzupełnienie tablicy animacji rozszerzenia
+ * @param frame klatka gry
+ * 
+ */
 void slide_animate_nodes(int frame) 
 {
 	for (int i = 0; i < board.total_size; i += 2)

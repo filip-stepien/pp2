@@ -1,4 +1,10 @@
+Ôªø//! Zignorowanie ostrze≈ºe≈Ñ Visual Studio generowanych przez natywne funkcje C
 #define _CRT_SECURE_NO_WARNINGS
+
+/**
+ * @file game_renders.c
+ * @brief Rysowanie element√≥w gry
+ */
 
 #include "game_includes.h"
 #include "game_renders.h"
@@ -6,7 +12,9 @@
 
 #include <stdio.h>
 
-// funkcja rysujπca planszÍ
+/**
+ * @brief Rysowanie planszy
+ */
 void draw_board()
 {
 	int i, j;
@@ -14,9 +22,8 @@ void draw_board()
 	{
 		for (j = 0; j < board.x_size; j++)
 		{
-			struct node current_node = board.board_array[i][j];	// aktualnie rysowany klocek
+			struct node current_node = board.board_array[i][j];
 
-			// rysowanie klocka, wykorzystujπc pola wygenerowane funkcjπ generate_board()
 			al_draw_filled_rounded_rectangle(
 				current_node.top_x,
 				current_node.top_y,
@@ -26,27 +33,27 @@ void draw_board()
 				current_node.color
 			);
 
-			if (current_node.value)	// jeøeli wartoúÊ klocka != 0
+			if (current_node.value)
 			{
-				// rysowanie wartoúci wewnπtrz klocka
 				al_draw_textf(
 					game.font,
 					al_map_rgb(cfg.node_text_color_r, cfg.node_text_color_g, cfg.node_text_color_b),
-					current_node.top_x + current_node.size / 2,						// po≥owa klocka na osi X = gÛrne x + po≥owa d≥ugoúci boku
-					current_node.top_y + current_node.size / 2 - cfg.font_size / 2,	// po≥owa klocka na osi Y = y + po≥owa d≥ugoúci boku, dalsza czÍúÊ - patrz niøej
-					ALLEGRO_ALIGN_CENTER,	// wycentrowanie tekstu przez allegro, ale tylko w osi X, w osi Y naleøy odjπÊ od y po≥owÍ wielkoúci czcionki
-					"%d",					// ciπg formatujπcy rysowany tekst
-					current_node.value		// tekst do narysowania
+					current_node.top_x + current_node.size / 2,
+					current_node.top_y + current_node.size / 2 - cfg.font_size / 2,
+					ALLEGRO_ALIGN_CENTER,
+					"%d",
+					current_node.value
 				);
 			}
 		}
 	}
 }
 
-// funkcja rysujπca licznik punktÛw
+/**
+ * @brief Rysowanie wyniku
+ */
 void draw_points()
 {
-	// rysowanie licznika
 	al_draw_filled_rounded_rectangle(
 		points.top_x,
 		points.top_y,
@@ -56,7 +63,6 @@ void draw_points()
 		al_map_rgb(cfg.points_bg_color_r, cfg.points_bg_color_g, cfg.points_bg_color_b)
 	);
 
-	// rysowanie punktÛw
 	al_draw_multiline_textf(
 		game.points_font,
 		al_map_rgb(cfg.points_text_color_r, cfg.points_text_color_g, cfg.points_text_color_b),
@@ -70,9 +76,11 @@ void draw_points()
 	);
 }
 
+/**
+ * @brief Rysowanie najlepszego wyniku
+ */
 void draw_best_points()
 {
-	// rysowanie licznika
 	al_draw_filled_rounded_rectangle(
 		best_points.top_x,
 		best_points.top_y,
@@ -95,6 +103,9 @@ void draw_best_points()
 	);
 }
 
+/**
+ * @brief Rysowanie przycisku menu
+ */
 void draw_menu_button()
 {
 	al_draw_filled_rounded_rectangle(
@@ -117,6 +128,9 @@ void draw_menu_button()
 	}
 }
 
+/**
+ * @brief Rysowanie przycisku restart
+ */
 void draw_restart_button()
 {
 	al_draw_filled_rounded_rectangle(
@@ -139,6 +153,9 @@ void draw_restart_button()
 	}
 }
 
+/**
+ * @brief Rysowanie okna menu
+ */
 void draw_menu_popup()
 {
 	int title_width = al_get_text_width(game.title_font, "2048");
@@ -216,6 +233,9 @@ void draw_menu_popup()
 	}
 }
 
+/**
+ * @brief Rysowanie okna ko≈Ñca gry
+ */
 void draw_end_popup()
 {
 	al_draw_filled_rounded_rectangle(
@@ -267,6 +287,9 @@ void draw_end_popup()
 	);
 }
 
+/**
+ * @brief Rysowanie przycisku od wyciszenia d≈∫wiƒôk√≥w
+ */
 void draw_mute_button()
 {
 	al_draw_filled_rounded_rectangle(
@@ -289,10 +312,11 @@ void draw_mute_button()
 	}
 }
 
-// funkcja czyszczπca ekran gry
+/**
+ * @brief Wyczyszczenie ekranu gry
+ */
 void clear()
 {
-	// prostokπt o kolorze t≥a jest rysowany na ca≥ym oknie
 	al_draw_filled_rectangle(
 		0,
 		0,
