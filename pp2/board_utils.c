@@ -1,11 +1,20 @@
+﻿//! Zignorowanie ostrzeżeń Visual Studio generowanych przez natywne funkcje C
 #define _CRT_SECURE_NO_WARNINGS
+
+/**
+ * @file board_utils.c
+ * @brief Funkcje pomocnicze
+ */
 
 #include "game_includes.h"
 #include "game_structures.h"
 #include "board_utils.h"
 #include "game_music.h"
 
-// funkcja sprawdzaj�ca czy na planszy nast�pi� ruch
+/**
+ * @brief Sprawdzenie czy na planszy nastąpił ruch
+ * @return czy nastąpił ruch
+ */
 bool did_board_change()
 {
 	int i, j;
@@ -13,7 +22,7 @@ bool did_board_change()
 	{
 		for (j = 0; j < board.x_size; j++)
 		{
-			if (board.prev_board_array[i][j].value != board.board_array[i][j].value)	// por�wnanie planszy aktualnej z zapisan�
+			if (board.prev_board_array[i][j].value != board.board_array[i][j].value)
 				return true;
 		}
 	}
@@ -21,7 +30,10 @@ bool did_board_change()
 	return false;
 }
 
-// funkcja sprawdzaj�ca czy mo�liwe jest wykonanie ruchu na planszy
+/**
+ * @brief Sprawdzenie czy gra się zakończyła
+ * @return czy gra się zakończyła
+ */
 bool did_game_end()
 {
 	int i, j;
@@ -42,6 +54,9 @@ bool did_game_end()
 	return true;
 }
 
+/**
+ * @brief Aktualizacja najlepszego wyniku
+ */
 void compare_and_set_best_score()
 {
 	if (points.counter > best_points.counter)
@@ -50,6 +65,9 @@ void compare_and_set_best_score()
 	}
 }
 
+/**
+ * @brief Zapisanie najlepszego wyniku do pliku
+ */
 void save_best_score()
 {
 	if (best_points.counter == points.counter && points.counter > 0)
@@ -64,6 +82,9 @@ void save_best_score()
 	}
 }
 
+/**
+ * @brief Obsługa kliknięć
+ */
 void handle_mouse_clicks()
 {
 	ALLEGRO_MOUSE_STATE state;

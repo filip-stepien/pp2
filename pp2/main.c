@@ -1,4 +1,8 @@
-﻿/* Pliki nagłówkowe z logiką gry */
+﻿/**
+ * @file main.c
+ * @brief Główny plik gry
+ */
+
 #include "game_structures.h"
 #include "game_init.h"
 #include "game_renders.h"
@@ -8,16 +12,19 @@
 #include "game_includes.h"
 #include "board_animations.h"
 #include "game_music.h"
-/**/
 
 #include <stdio.h>
 #include <stdbool.h>
 #include <time.h>
 
-// funkcja inicjująca zmienne okna gry i źródła eventów
+/**
+ * @brief Inicjalizacja gry i zmiennych Allegro, 
+ * @param game struktura ze zmiennymi gry
+ * @param cfg struktura z konfiguracją gry
+ * @return kod błędu gry
+ */
 int game_init(struct game_window* game, struct config cfg)
 {
-    // inicjacja zmiennych struktury okna gry
     game->game_initialized = al_init();
     game->keyboard_initialized = al_install_keyboard();
     game->primitive_shapes_addon_initialized = al_init_primitives_addon();
@@ -38,7 +45,6 @@ int game_init(struct game_window* game, struct config cfg)
     game->started = false;
     game->muted = false;
 
-    // generacja kodów błędów, jeżeli któraś zmienna nie została zainicjowana poprawnie
     if (!game->game_initialized) return 100;
     if (!game->keyboard_initialized) return 101;
     if (!game->primitive_shapes_addon_initialized) return 102;
@@ -48,15 +54,17 @@ int game_init(struct game_window* game, struct config cfg)
     if (!game->font || !game->points_font || !game->title_font || !game->option_font) return 106;
     if (!game->timer) return 107;
 
-    // rejestrowanie źródeł eventów
     al_register_event_source(game->queue, al_get_keyboard_event_source());              // eventy klawiatury
     al_register_event_source(game->queue, al_get_display_event_source(game->display));  // eventy okna
     al_register_event_source(game->queue, al_get_timer_event_source(game->timer));      // eventy licznika
 
-    return 0;   // gra poprawnie zainicjowana
+    return 0;
 }
 
-// funkcja sprzątająca zainicjalizowane elementy gry
+/**
+ * @brief Sprzątanie zainicjalizowanych elementów gry
+ * @param game struktura ze zmiennymi gry
+ */
 void game_cleanup(struct game_window* game)
 {
     save_best_score();
@@ -75,16 +83,19 @@ void game_cleanup(struct game_window* game)
     free(sounds.grow_sounds);
     sounds.grow_sounds = NULL;
 
-    al_destroy_font(game->font);            // usuwanie czcionki
-    al_destroy_display(game->display);      // usuwanie okna
-    al_destroy_timer(game->timer);          // usuwanie licznika
-    al_destroy_event_queue(game->queue);    // usuwanie kolejki
-    game = NULL;                            // wyzerowanie struktury ze zmiennymi gry
+    al_destroy_font(game->font);
+    al_destroy_display(game->display);
+    al_destroy_timer(game->timer);
+    al_destroy_event_queue(game->queue);
+    game = NULL;
 }
 
-// funkcja wypisująca błąd przy uruchomieniu gry
-// przyjmuje kod uruchomienia jako argument
-bool check_err_state(code)
+/**
+ * @brief Obsługa błędów przy uruchomieniu gry
+ * @param code kod uruchomienia gry
+ * @return czy wystąpił błąd
+ */
+bool check_err_state(int code)
 {
     switch (code)
     {
@@ -129,15 +140,17 @@ bool check_err_state(code)
     }
 }
 
+/**
+ * @brief Główna funkcja programu
+ */
 int main()
 {
-    int code = game_init(&game, cfg); // generacja kodu uruchomienia gry
+    int code = game_init(&game, cfg);
 
-    // jeżeli wystąpi błąd, zamknij grę i wygeneruj wiadomość z błędem
     bool err = check_err_state(code);
     if (err) return -1;
 
-    al_start_timer(game.timer); // start licznika gry
+    al_start_timer(game.timer);
 
     int option_center_x = (cfg.width - cfg.option_width) / 2;
     int option_start_y = 300;
@@ -156,13 +169,12 @@ int main()
 
     initialize_mute_button(mute_button_right_x, mute_button_end_y);
     
-    // główna pętla gry
-    bool running = true;    // zmienna sterująca działaniem głównej pętli gry
-    ALLEGRO_EVENT event;    // zmienna w której znajdzie się przechwycony event 
+    bool running = true;
+    ALLEGRO_EVENT event;
 
     while (running)
     {
-        al_wait_for_event(game.queue, &event);  // nasłuchuj eventów
+        al_wait_for_event(game.queue, &event);
         switch (event.type)
         {
             case ALLEGRO_EVENT_TIMER:
@@ -199,12 +211,12 @@ int main()
                 animations.click_frame++;
                 break;
 
-            case ALLEGRO_EVENT_KEY_DOWN:        // event "przycisk wciśnięty"
+            case ALLEGRO_EVENT_KEY_DOWN:
                 if (animations.on_cooldown || !game.started || game.current_popup != NULL) break;
 
                 switch (event.keyboard.keycode)
                 {
-                    case ALLEGRO_KEY_UP:        // przycisk - strzałka w górę
+                    case ALLEGRO_KEY_UP:
                         animations.last_move = UP;
 
                         merge_up();
@@ -215,7 +227,7 @@ int main()
                         get_nodes_to_slide_animate_down_to_up();
                         break;
 
-                    case ALLEGRO_KEY_DOWN:      // przycisk - strzałka w dół
+                    case ALLEGRO_KEY_DOWN:
                         animations.last_move = DOWN;
 
                         merge_down();
@@ -226,7 +238,7 @@ int main()
                         get_nodes_to_slide_animate_up_to_down();
                         break;
 
-                    case ALLEGRO_KEY_LEFT:      // przycisk - strzałka w lewo
+                    case ALLEGRO_KEY_LEFT:
                         animations.last_move = LEFT;
 
                         merge_left();
@@ -237,7 +249,7 @@ int main()
                         get_nodes_to_slide_animate_right_to_left();
                         break;
 
-                    case ALLEGRO_KEY_RIGHT:     // przycisk - strzałka w prawo
+                    case ALLEGRO_KEY_RIGHT:
                         animations.last_move = RIGHT;
 
                         merge_right();
@@ -248,8 +260,8 @@ int main()
                         get_nodes_to_slide_animate_left_to_right();
                         break;
 
-                    case ALLEGRO_KEY_ESCAPE:    // przycisk - esc
-                        running = false;        // przerwanie pętli
+                    case ALLEGRO_KEY_ESCAPE:
+                        running = false;
                         break;
                 }
 
@@ -257,7 +269,7 @@ int main()
                     event.keyboard.keycode == ALLEGRO_KEY_LEFT ||
                     event.keyboard.keycode == ALLEGRO_KEY_UP ||
                     event.keyboard.keycode == ALLEGRO_KEY_DOWN) {
-                    generate_random_node(); // generowanie losowego klocka
+                    generate_random_node();
                     animations.frame = 0;
                     animations.done_sliding = false;
                     animations.on_cooldown = true;
@@ -270,14 +282,14 @@ int main()
                 }
                 break;
 
-            case ALLEGRO_EVENT_DISPLAY_CLOSE:   // event "zamknięcie okna"
-                running = false;                // przerwanie pętli
+            case ALLEGRO_EVENT_DISPLAY_CLOSE:
+                running = false;
                 break;
         }
     }
 
-    board_cleanup();        // zwolnienie pamięci zaalokowanej dla planszy gry
-    game_cleanup(&game);    // czyszczenie po zakończeniu gry
+    board_cleanup();
+    game_cleanup(&game);
 
     return 0;
 }

@@ -1,14 +1,18 @@
-// Plik zawieraj¹cy definicjê podstawowych struktur gry
+ï»¿#pragma once
 
-#pragma once // zapewnienie ¿e dany plik nag³ówkowy bêdzie za³¹czony tylko raz
+/**
+ * @file game_structures.h
+ * @brief Podstawowe struktury gry - deklaracje
+ */
+
 #include "game_includes.h"
 
 #include <stdio.h>
 
-// struktura zawieraj¹ca podstawow¹ konfiguracjê gry
+//! Struktura zawierajÄ…ca podstawowÄ… konfiguracjÄ™ gry
 struct config {
-    int width;                              // szerokoœæ okna gry
-    int height;                             // wysokoœæ okna gry
+    int width;
+    int height;
     char* font_name;
     char* restart_button_filename;
     char* menu_button_filename;
@@ -20,20 +24,20 @@ struct config {
     int grow_sounds_length;
     float music_volume;
     float sfx_volume;
-    int font_size;                          // wielkoœæ czcionki
+    int font_size;
     int title_font_size;
     int option_font_size;
-    int points_font_size;                   // wielkoœæ czcionki z punktami
-    int points_text_leading;                // interlinia liczników punktów   
-    int fps;                                // liczba klatek/s
-    int board_x_size;					    // maksymalna iloœæ klocków na osi X
-    int board_y_size;					    // maksymalna iloœæ klocków na osi Y
-    int board_node_size;				    // wielkoœæ klocka (px)
-    int board_gap;						    // wielkoœæ przerwy miêdzy klockami (10px)
-    int points_width;                       // szerokoœæ licznika punktów
-    int points_height;                      // wysokoœæ licznika punktów
-    int best_points_width;                  // szerokoœæ licznika najlepszego wyniku
-    int best_points_height;                 // wysokoœæ licznika najlepszego wyniku
+    int points_font_size;
+    int points_text_leading;  
+    int fps;
+    int board_x_size;
+    int board_y_size;
+    int board_node_size;
+    int board_gap;
+    int points_width;
+    int points_height;
+    int best_points_width;
+    int best_points_height;
     int restart_button_width;
     int restart_button_height;
     int restart_button_img_padding;
@@ -65,21 +69,21 @@ struct config {
     unsigned char menu_button_bg_color_r;
     unsigned char menu_button_bg_color_g;
     unsigned char menu_button_bg_color_b;
-    unsigned char bg_color_r;               // kolor t³a (r)
-    unsigned char bg_color_g;               // kolor t³a (g)
-    unsigned char bg_color_b;               // kolor t³a (b)
-    unsigned char points_bg_color_r;        // kolor t³a licznika (r)
-    unsigned char points_bg_color_g;        // kolor t³a licznika (g)
-    unsigned char points_bg_color_b;        // kolor t³a licznika (b)
-    unsigned char default_node_color_r;     // kolor klocka bez wartoœci (r)
-    unsigned char default_node_color_g;     // kolor klocka bez wartoœci (g)
-    unsigned char default_node_color_b;     // kolor klocka bez wartoœci (b)
-    unsigned char points_text_color_r;      // kolor tekstu licznika (r)
-    unsigned char points_text_color_g;      // kolor tekstu licznika (g)
-    unsigned char points_text_color_b;      // kolor tekstu licznika (b)
-    unsigned char node_text_color_r;        // kolor tekstu klocka (r)
-    unsigned char node_text_color_g;        // kolor tekstu klocka (g)
-    unsigned char node_text_color_b;        // kolor tekstu klocka (b)
+    unsigned char bg_color_r;               
+    unsigned char bg_color_g;               
+    unsigned char bg_color_b;               
+    unsigned char points_bg_color_r;        
+    unsigned char points_bg_color_g;        
+    unsigned char points_bg_color_b;        
+    unsigned char default_node_color_r;     
+    unsigned char default_node_color_g;     
+    unsigned char default_node_color_b;     
+    unsigned char points_text_color_r;      
+    unsigned char points_text_color_g;      
+    unsigned char points_text_color_b;      
+    unsigned char node_text_color_r;        
+    unsigned char node_text_color_g;        
+    unsigned char node_text_color_b;        
     unsigned char title_text_color_r;       
     unsigned char title_text_color_g;       
     unsigned char title_text_color_b;    
@@ -95,25 +99,27 @@ struct config {
     unsigned char end_button_bg_color_r;
     unsigned char end_button_bg_color_g;
     unsigned char end_button_bg_color_b;
-    int node_min_interpolation;             // minimalna wartoœæ dla której obliczany jest gradient koloru
-    int node_max_interpolation;             // maksymalna wartoœæ dla której obliczany jest gradient koloru
-    unsigned char node_min_color_r;         // wartoœæ minimalna gradientu (r)
-    unsigned char node_min_color_g;         // wartoœæ minimalna gradientu (g)
-    unsigned char node_min_color_b;         // wartoœæ minimalna gradientu (b)
-    unsigned char node_max_color_r;         // wartoœæ maksymalna gradientu (r)
-    unsigned char node_max_color_g;         // wartoœæ maksymalna gradientu (g)
-    unsigned char node_max_color_b;         // wartoœæ maksymalna gradientu (b)
-    int grow_animation_duration;            // d³ugoœæ animacjki tworzenia klocka (klatki)
-    int slide_animation_speed;              // szybkoœæ animacji przesuwania klocków (klatki/s)
-    int move_cooldown;                      // co jaki czas mo¿na wykonaæ ruch (klatki)
+    int node_min_interpolation;             
+    int node_max_interpolation;             
+    unsigned char node_min_color_r;         
+    unsigned char node_min_color_g;        
+    unsigned char node_min_color_b;         
+    unsigned char node_max_color_r;         
+    unsigned char node_max_color_g;         
+    unsigned char node_max_color_b;         
+    int grow_animation_duration;            
+    int slide_animation_speed;              
+    int move_cooldown;                      
     int click_cooldown;
     unsigned char menu_bg_color_r;
     unsigned char menu_bg_color_g;
     unsigned char menu_bg_color_b;
 };
 
+//! Konfiguracja gry
 extern struct config cfg;
 
+//! Struktura zawierajÄ…ca zmienne dÅºwiÄ™kÃ³w i muzyki
 struct sounds {
     ALLEGRO_SAMPLE_INSTANCE* music;
     ALLEGRO_SAMPLE_INSTANCE** click_sounds;
@@ -122,72 +128,79 @@ struct sounds {
     int last_click_sound;
 };
 
+//! DÅºwiÄ™ki
 extern struct sounds sounds;
 
-// struktura zawieraj¹ca g³ówne zmienne okna gry
+//! Struktura zawierajÄ…ca gÅ‚Ã³wne zmienne okna gry
 struct game_window {
-    bool game_initialized;                      // czy gra zosta³a zainicjowana poprawnie
-    bool keyboard_initialized;                  // czy gra posiada zainicjowan¹ klawiaturê
-    bool primitive_shapes_addon_initialized;    // czy modu³ z podstawowymi kszta³tami zosta³ zainicjowany
-    bool font_addon_initialized;                // czy modu³ z czcionk¹ zosta³ zainicjowany
-    bool ttf_addon_initialized;                 // czy modu³ z plikami .ttf zosta³ zainicjowany
+    bool game_initialized;
+    bool keyboard_initialized;
+    bool primitive_shapes_addon_initialized;    
+    bool font_addon_initialized;                
+    bool ttf_addon_initialized;                 
     bool image_addon_initialized;
     bool audio_addon_initialized;
     bool acodec_addon_initialized;
     bool mouse_initialized;
     bool started;
     bool muted;
-    ALLEGRO_DISPLAY* display;                   // okno gry
-    ALLEGRO_EVENT_QUEUE* queue;                 // kolejka gry
-    ALLEGRO_FONT* font;                         // czcionka okna
-    ALLEGRO_FONT* points_font;                  // czcionka dla punktów
+    ALLEGRO_DISPLAY* display;                   
+    ALLEGRO_EVENT_QUEUE* queue;                 
+    ALLEGRO_FONT* font;                         
+    ALLEGRO_FONT* points_font;                  
     ALLEGRO_FONT* title_font;
     ALLEGRO_FONT* option_font;
-    ALLEGRO_TIMER* timer;                       // licznik klatek gry
+    ALLEGRO_TIMER* timer;                       
     struct popup* current_popup;
 };
 
+//! Zmienne gry
 extern struct game_window game;
 
-// struktura reprezentuj¹ca klocek planszy
+//! Struktura reprezentujÄ…ca klocek planszy
 struct node {
-    int value;				// wartoœæ, jak¹ przechowuje klocek (2, 4, 8, 16, 32...)
-    int top_x;				// koordynata X klocka w lewym górnym rogu (px)
-    int top_y;				// koordynata Y klocka w lewym górnym rogu (px)
-    int bottom_x;			// koordynata X klocka w prawym dolnym rogu (px)
-    int bottom_y;			// koordynata Y klocka w prawym dolnym rogu (px)
-    int size;				// wielkoœæ boku klocka (px)
-    ALLEGRO_COLOR color;	// kolor klocka
+    int value;
+    int top_x;
+    int top_y;
+    int bottom_x;
+    int bottom_y;
+    int size;
+    ALLEGRO_COLOR color;
 };
 
-// struktura zawieraj¹ce zmienne planszy gry
+//! Struktura zawierajÄ…ce zmienne planszy gry
 struct game_board {
-    int x_size;						// maksymalna iloœæ klocków na osi X 
-    int y_size;						// maksymalna iloœæ klocków na osi Y
+    int x_size;						
+    int y_size;						
     int total_size;
-    int node_size;					// wielkoœæ klocka (px)
-    int gap;						// wielkoœæ przerwy miêdzy klockami (10px)
-    bool first_turn;                // informacja, czy aktualna tura jest pierwsza
-    struct node** prev_board_array; // poprzedni stan planszy
-    struct node** board_array;		// plansza z klockami
+    int node_size;					
+    int gap;						
+    bool first_turn;                
+    struct node** prev_board_array; 
+    struct node** board_array;		
 };
 
+//! Plansza
 extern struct game_board board;
 
-// struktura ze zmiennymi tabeli punktowej
+//! Struktura ze zmiennymi tabeli punktowej
 struct game_points {
-    int counter;    // licznik wyniku
-    int width;      // szerokoœæ tabeli punktowej (px)
-    int height;     // wysokoœæ tabeli punktowej (px)
-    int top_x;      // koordynata X lewego górnego rogu tabeli punktowej (px)
-    int top_y;      // koordynata Y lewego górnego rogu tabeli punktowej (px)
-    int bottom_x;   // koordynata X prawego dolnego rogu tabeli punktowej (px)
-    int bottom_y;   // koordynata Y prawego dolnego rogu tabeli punktowej (px)
+    int counter;    
+    int width;      
+    int height;     
+    int top_x;      
+    int top_y;      
+    int bottom_x;   
+    int bottom_y;   
 };
 
+//! Wynik
 extern struct game_points points;
+
+//! Najlepszy wynik
 extern struct game_points best_points;
 
+//! Struktura reprezentujÄ…ca przycisk
 struct button {
     ALLEGRO_BITMAP* img;
     int width;
@@ -202,18 +215,37 @@ struct button {
     void (*on_click)();
 };
 
+//! Przycisk menu
 extern struct button menu_button;
+
+//! Przycisk restart
 extern struct button restart_button;
+
+//! Przycisk planszy 4x4
 extern struct button button_4x4;
+
+//! Przycisk planszy 5x5
 extern struct button button_5x5;
+
+//! Przycisk planszy 6x6
 extern struct button button_6x6;
+
+//! Przycisk powrotu
 extern struct button back;
+
+//! Przycisk wyciszenia dÅºwiÄ™kÃ³w
 extern struct button mute;
+
+//! Przycisk nowej gry
 extern struct button new_game;
 
+//! Przyciski interfejsu
 extern struct button* ui_buttons[3];
+
+//! IloÅ›Ä‡ przyciskÃ³w interfejsu
 extern int ui_buttons_length;
 
+//! Struktura reprezentujÄ…ca okno gry
 struct popup {
     int width;
     int height;
@@ -227,11 +259,16 @@ struct popup {
     bool visible;
 };
 
+//! Okno menu
 extern struct popup menu;
+
+//! Okno koÅ„ca gry
 extern struct popup end;
 
+//! Enumerator stanowiÄ…cy prefix dla kierunku ruchu
 enum LAST_MOVE { NONE, LEFT, RIGHT, UP, DOWN };
 
+//! Struktura ze zmiennymi dla animacji
 struct game_animations {
     int frame;
     int click_frame;
@@ -244,4 +281,5 @@ struct game_animations {
     enum LAST_MOVE last_move;
 };
 
+//! Animacje
 extern struct game_animations animations;

@@ -1,4 +1,10 @@
+ï»¿//! Zignorowanie ostrzeÅ¼eÅ„ Visual Studio generowanych przez natywne funkcje C
 #define _CRT_SECURE_NO_WARNINGS
+
+/**
+ * @file game_init.c
+ * @brief Inicjalizacja elementÃ³w gry
+ */
 
 #include "game_includes.h"
 #include "game_init.h"
@@ -7,6 +13,9 @@
 #include "game_music.h"
 #include "board_utils.h"
 
+/**
+ * @brief Inicjalizacja dÅºwiÄ™kÃ³w
+ */
 void initialize_sounds()
 {
 	al_reserve_samples(cfg.click_sounds_length + cfg.grow_sounds_length + 1);
@@ -36,10 +45,11 @@ void initialize_sounds()
 	al_set_sample_instance_gain(sounds.music, cfg.music_volume);
 }
 
-// funkcja inicjuj¹ca planszê gry
+/**
+ * @brief Inicjalizacja planszy gry
+ */
 void initialize_board()
 {
-	// przypisanie strukturze board zmiennych ze struktury config zawieraj¹c¹ konfiguracjê gry
 	board.x_size = cfg.board_x_size;
 	board.y_size = cfg.board_y_size;
 	board.total_size = cfg.board_y_size * cfg.board_y_size;
@@ -51,7 +61,6 @@ void initialize_board()
 	animations.slide_animation_array = (struct node*)calloc(board.total_size, sizeof(struct node));
 	animations.done_sliding = true;
 
-	// dynamiczna alokacja pamiêci dla planszy z klockami
 	board.board_array = (struct node**)calloc(board.y_size, sizeof(struct node*));
 	board.prev_board_array = (struct node**)calloc(board.y_size, sizeof(struct node*));
 
@@ -63,82 +72,63 @@ void initialize_board()
 	}
 }
 
-// funkcja wstêpnie inicjuj¹ca klocki
-// przyjmuje koordynaty x i y, w których ma zostaæ wygenerowana plansza
+/**
+ * @brief Inicjalizacja klockÃ³w
+ * @param render_x koordynata x, od ktÃ³rej bÄ™dzie rysowana plansza
+ * @param render_y koordynata y, od ktÃ³rej bÄ™dzie rysowana plansza
+ */
 void initialize_nodes(int render_x, int render_y)
 {
 	int i, j;
-	int x = render_x, y = render_y;	// liczenie koordynatów x i y rozpoczyna siê od koordynatów w których ma znajdowaæ siê plansza
+	int x = render_x, y = render_y;
 
 	for (i = 0; i < board.y_size; i++)
 	{
 		for (j = 0; j < board.x_size; j++)
 		{
 			struct node current_node = {
-				0,							// pocz¹tkowa wartoœæ klocka
-
-				x,							// klocki rysowane s¹ od lewego górnego rogu a wiêc górne x i y to kolejne
-				y,							// wielokrotnoœci d³ugoœci boku i przerwy miêdzy nimi licz¹c od zera (patrz ni¿ej)
-
-				x + board.node_size,		// aby otrzymaæ "dolne" x i y, ka¿dorazowo nale¿y
-				y + board.node_size,		// dodaæ do nich d³ugoœæ boku (patrz ni¿ej)
-
-				board.node_size,			// d³ugoœæ boku
-				al_map_rgb(255, 255, 255)	// kolor klocka
+				0,
+				x,
+				y,
+				x + board.node_size,
+				y + board.node_size,
+				board.node_size,
+				al_map_rgb(255, 255, 255)
 			};
 
-			board.board_array[i][j] = current_node;		// wstawianie wygenerowanego klocka do tablicy
-			x += board.node_size + board.gap;			// kolejna iteracja na osi X = zwiêkszenie x o d³ugoœæ boku i przerwê miêdzy klockami
+			board.board_array[i][j] = current_node;
+			x += board.node_size + board.gap;
 		}
 
-		x = render_x;						// resetowanie x do pocz¹tkowej wartoœci, aby rozpocz¹æ od pocz¹tku wiersza
-		y += board.node_size + board.gap;	// kolejna iteracja na osi Y = zwiêkszenie y o d³ugoœæ boku i przerwê miêdzy klockami
+		x = render_x;
+		y += board.node_size + board.gap;
 	}
-
-	/*
-
-	(x,y)							 (x+n+gap,y)
-		O********			|	  |			O********
-		*		*			|	  |			*		*
-		*		* n			| gap |			*		*
-		*		*			|	  |			*		*
-		********O			|	  |			********O
-			n	(x+n, y+n)							(x+2n+gap,y+n)
-
-		---------
-		   gap
-		---------
-
-	(x,y+n+gap)
-		O********
-		*		*
-		*		* n
-		*		*
-		********O
-			n	(x+n,y+2n+gap)
-
-	*/
 }
 
-// funkcja zwalniaj¹ca pamiêæ zaalokowan¹ dla planszy gry
+/**
+ * @brief Czyszczenie po planszy gry
+ */
 void board_cleanup()
 {
-	// zwalnianie pamiêci w kolejnoœci odwrotnej w stosunku do alokacji
 	int i;
 	for (i = board.y_size - 1; i >= 0; i--)
 		free(board.board_array[i]);
 
 	free(board.board_array);
-	board.board_array = NULL;	// unikniêciê "wisz¹cego wskaŸnika"
+	board.board_array = NULL;
 
 	free(animations.grow_animation_array);
 	animations.grow_animation_array = NULL;
 }
 
-// funkcja inicjujaca liczninik punktów
+/**
+ * @brief Inicjalizacja licznika wyniku
+ * @param render_x koordynata x, od ktÃ³rej bÄ™dzie rysowany licznik wyniku
+ * @param render_y koordynata y, od ktÃ³rej bÄ™dzie rysowany licznik wyniku
+ * @param new_width szerokoÅ›Ä‡ licznika
+ */
 void initialize_points(int render_x, int render_y, int new_width)
 {
-	// przypisanie strukturze points zmiennych z parametrów funkcji
 	points.width = new_width;
 	points.height = cfg.points_height;
 	points.top_x = render_x;
@@ -148,9 +138,14 @@ void initialize_points(int render_x, int render_y, int new_width)
 	points.counter = 0;
 }
 
+/**
+ * @brief Inicjalizacja licznika najlepszego wyniku
+ * @param render_x koordynata x, od ktÃ³rej bÄ™dzie rysowany licznik najlepszego wyniku
+ * @param render_y koordynata y, od ktÃ³rej bÄ™dzie rysowany licznik najlepszego wyniku
+ * @param new_width szerokoÅ›Ä‡ licznika
+ */
 void initialize_best_points(int render_x, int render_y, int new_width)
 {
-	// przypisanie strukturze points zmiennych z parametrów funkcji
 	best_points.width = new_width;
 	best_points.height = cfg.best_points_height;
 	best_points.top_x = render_x;
@@ -173,6 +168,9 @@ void initialize_best_points(int render_x, int render_y, int new_width)
 	}
 }
 
+/**
+ * @brief Efekt po wciÅ›nieciu przycisku restart
+ */
 void restart_button_handler()
 {
 	animations.click_frame = 0;
@@ -185,6 +183,12 @@ void restart_button_handler()
 	generate_random_node();
 }
 
+/**
+ * @brief Inicjalizacja przycisku restart
+ * @param render_x koordynata x, od ktÃ³rej bÄ™dzie rysowany przycisk
+ * @param render_y koordynata y, od ktÃ³rej bÄ™dzie rysowany przycisk
+ * @param img_name nazwa pliku z ikonÄ…
+ */
 void initialize_restart_button(int render_x, int render_y, char* img_name)
 {
 	restart_button.img = al_load_bitmap(img_name);
@@ -204,12 +208,21 @@ void initialize_restart_button(int render_x, int render_y, char* img_name)
 	);
 }
 
+/**
+ * @brief Efekt po wciÅ›nieciu przycisku menu
+ */
 void menu_button_handler()
 {
 	menu.visible = true;
 	game.current_popup = &menu;
 }
 
+/**
+ * @brief Inicjalizacja przycisku menu
+ * @param render_x koordynata x, od ktÃ³rej bÄ™dzie rysowany przycisk
+ * @param render_y koordynata y, od ktÃ³rej bÄ™dzie rysowany przycisk
+ * @param img_name nazwa pliku z ikonÄ…
+ */
 void initialize_menu_button(int render_x, int render_y, char* img_name)
 {
 	menu_button.img = al_load_bitmap(img_name);
@@ -230,6 +243,9 @@ void initialize_menu_button(int render_x, int render_y, char* img_name)
 
 }
 
+/**
+ * @brief RozpoczÄ™cie nowej gry
+ */
 void start_new_game()
 {
 	save_best_score();
@@ -247,19 +263,22 @@ void start_new_game()
 	int restart_button_y = points_center_y + cfg.best_points_height - cfg.restart_button_height;
 	int menu_button_y = points_center_y + cfg.best_points_height - cfg.menu_button_height;
 
-	initialize_points(center_x, points_center_y, new_points_width);             // inicjalizacja licznika punktów
+	initialize_points(center_x, points_center_y, new_points_width);
 	initialize_best_points(best_points_x, points_center_y, new_best_points_width);
-	initialize_nodes(center_x, board_center_y);               // inicjalizacja klocków
+	initialize_nodes(center_x, board_center_y);
 	initialize_restart_button(restart_button_x, restart_button_y, cfg.restart_button_filename);
 	initialize_menu_button(menu_button_x, menu_button_y, cfg.menu_button_filename);
 
 	srand(time(NULL));
-	generate_random_node();     // generowanie losowego klocka
+	generate_random_node();
 
 	back.visible = true;
 	animations.frame = 0;
 }
 
+/**
+ * @brief Efekt po wciÅ›niÄ™ciu przycisku restart w oknie koÅ„ca gry
+ */
 void end_button_handler()
 {
 	restart_button_handler();
@@ -267,6 +286,11 @@ void end_button_handler()
 	end.visible = false;
 }
 
+/**
+ * @brief Inicjalizacja przycisku restartu w oknie koÅ„ca gry
+ * @param render_x koordynata x, od ktÃ³rej bÄ™dzie rysowany przycisk
+ * @param render_y koordynata y, od ktÃ³rej bÄ™dzie rysowany przycisk
+ */
 void initialize_end_button(int render_x, int render_y)
 {
 	new_game.img = NULL;
@@ -286,6 +310,9 @@ void initialize_end_button(int render_x, int render_y)
 	);
 }
 
+/**
+ * @brief Inicjalizacja okna koÅ„ca gry
+ */
 void initialize_end_popup()
 {
 	int center_x = (cfg.width - cfg.end_popup_width) / 2;
@@ -311,6 +338,9 @@ void initialize_end_popup()
 	end.buttons[0] = &new_game;
 }
 
+/**
+ * @brief WspÃ³lny efekt przyciskÃ³w od wyboru wielkoÅ›ci planszy
+ */
 void common_option_handler()
 {
 	menu.visible = false;
@@ -320,30 +350,45 @@ void common_option_handler()
 	start_new_game();
 }
 
+/**
+ * @brief Efekt przycisku wyboru planszy (opcja 4x4)
+ */
 void option_4x4_hanlder()
 {
 	cfg.board_x_size = cfg.board_y_size = 4;
 	common_option_handler();
 }
 
+/**
+ * @brief Efekt przycisku wyboru planszy (opcja 5x5)
+ */
 void option_5x5_hanlder()
 {
 	cfg.board_x_size = cfg.board_y_size = 5;
 	common_option_handler();
 }
 
+/**
+ * @brief Efekt przycisku wyboru planszy (opcja 6x6)
+ */
 void option_6x6_hanlder()
 {
 	cfg.board_x_size = cfg.board_y_size = 6;
 	common_option_handler();
 }
 
+/**
+ * @brief Efekt przycisku powrotu do gry
+ */
 void back_handler()
 {
 	menu.visible = false;
 	game.current_popup = NULL;
 }
 
+/**
+ * @brief Efekt przycisku od dÅºwiÄ™ku
+ */
 void mute_button_handler()
 {
 	animations.click_cooldown = true;
@@ -362,6 +407,11 @@ void mute_button_handler()
 	}
 }
 
+/**
+ * @brief Inicjalizacja przycisku od dÅºwiÄ™ku
+ * @param render_x koordynata x, od ktÃ³rej bÄ™dzie rysowany przycisk
+ * @param render_y koordynata y, od ktÃ³rej bÄ™dzie rysowany przycisk
+ */
 void initialize_mute_button(int render_x, int render_y)
 {
 	mute.img = al_load_bitmap(cfg.mute_button_filenames[0]);
@@ -381,6 +431,11 @@ void initialize_mute_button(int render_x, int render_y)
 	);
 }
 
+/**
+ * @brief Inicjalizacja przyciskÃ³w w menu
+ * @param render_x koordynata x, od ktÃ³rej bÄ™dÄ… rysowane przyciski
+ * @param render_y koordynata y, od ktÃ³rej bÄ™dÄ… rysowane przyciski
+ */
 void initialize_menu_option_buttons(int render_x, int render_y)
 {
 	button_4x4.img = button_5x5.img = button_6x6.img = back.img = NULL;
@@ -420,6 +475,9 @@ void initialize_menu_option_buttons(int render_x, int render_y)
 	back.bottom_y = button_6x6.bottom_y + cfg.option_gap + cfg.option_height;
 }
 
+/**
+ * @brief Inicjalizacja okna menu
+ */
 void initialize_menu_popup()
 {
 	menu.width = cfg.width;
